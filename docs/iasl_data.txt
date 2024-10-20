@@ -1,0 +1,1836 @@
+ Scope (_SB)
+    {
+        OperationRegion (SOR1, SystemIO, SBA1, 0x10)
+        Field (SOR1, ByteAcc, NoLock, Preserve)
+        {
+            SMSA,   8, 
+            SSSA,   8, 
+            SBCA,   8, 
+            SHCA,   8, 
+            SBAA,   8, 
+            SE0A,   8, 
+            SE1A,   8, 
+            SBDA,   8, 
+            SSCA,   8, 
+            SMCA,   8, 
+            SSEA,   16, 
+            SSDA,   16, 
+            SMTA,   8
+        }
+
+        OperationRegion (SOR2, SystemIO, SBA2, 0x10)
+        Field (SOR2, ByteAcc, NoLock, Preserve)
+        {
+            SMSB,   8, 
+            SSSB,   8, 
+            SBCB,   8, 
+            SHCB,   8, 
+            SBAB,   8, 
+            SD0B,   8, 
+            SD1B,   8, 
+            SBDB,   8, 
+            SSCB,   8, 
+            SMCB,   8, 
+            SSEB,   16, 
+            SSDB,   16, 
+            SMTB,   8
+        }
+
+        Mutex (MSMB, 0x00)
+        Method (RWBK, 5, NotSerialized)
+        {
+            Acquire (MSMB, 0xFFFF)
+            If ((Arg0 == Zero))
+            {
+                Local0 = SMSA /* \_SB_.SMSA */
+                Local0 &= Zero
+                Local0 |= 0xFF
+                SMSA = Local0
+                Sleep (0x02)
+                Local0 = SBAA /* \_SB_.SBAA */
+                Local0 &= Zero
+                Local0 |= Arg1
+                SBAA = Local0
+                Sleep (0x02)
+                Local0 = SHCA /* \_SB_.SHCA */
+                Local0 &= Zero
+                Local0 |= Arg2
+                SHCA = Local0
+                Sleep (0x02)
+                Local0 = SBCA /* \_SB_.SBCA */
+                Local0 &= Zero
+                Local0 |= 0x14
+                SBCA = Local0
+                Sleep (0x02)
+                Local0 = SE0A /* \_SB_.SE0A */
+                Local0 &= Zero
+                Local0 |= Arg3
+                SE0A = Local0
+                Sleep (0x02)
+                Local1 = (Arg1 & One)
+                If ((Local1 == Zero))
+                {
+                    Local2 = Arg3
+                    Local3 = Arg2
+                    While (Local2)
+                    {
+                        Local4 = DerefOf (Arg4 [Local3])
+                        SBDA = Local4
+                        Sleep (0x02)
+                        Local2--
+                        Local3++
+                    }
+                }
+
+                Local0 = SBCA /* \_SB_.SBCA */
+                Local0 &= Zero
+                Local0 |= 0x54
+                SBCA = Local0
+                Sleep (0x02)
+                Local1 = SMSA /* \_SB_.SMSA */
+                While (!(Local1 & One))
+                {
+                    Local1 = SMSA /* \_SB_.SMSA */
+                    If ((Local1 & 0x1C))
+                    {
+                        Release (MSMB)
+                        Return (One)
+                    }
+
+                    If ((Local1 & 0x02))
+                    {
+                        Break
+                    }
+
+                    Sleep (0x02)
+                }
+
+                Local1 = SMSA /* \_SB_.SMSA */
+                While ((Local1 & One))
+                {
+                    Local1 = SMSA /* \_SB_.SMSA */
+                    Sleep (0x02)
+                }
+
+                Local1 = (Arg1 & One)
+                If (Local1)
+                {
+                    Local1 = Arg2
+                    Local2 = Arg3
+                    While (Local2)
+                    {
+                        Arg4 [Local1] = SBDA /* \_SB_.SBDA */
+                        Sleep (0x02)
+                        Local1++
+                        Local2--
+                    }
+                }
+            }
+
+            If ((Arg0 == One)) {}
+            Release (MSMB)
+            Return (Zero)
+        }
+
+        Method (STMV, 3, NotSerialized)
+        {
+            Local0 = SMSA /* \_SB_.SMSA */
+            Local0 &= Zero
+            Local0 |= 0xFF
+            SMSA = Local0
+            Sleep (0x02)
+            Local0 = SBAA /* \_SB_.SBAA */
+            Local0 &= Zero
+            Local0 |= 0x5E
+            SBAA = Local0
+            Sleep (0x02)
+            Local0 = SHCA /* \_SB_.SHCA */
+            Local0 &= Zero
+            Local0 |= Arg2
+            SHCA = Local0
+            Sleep (0x02)
+            Local0 = SBCA /* \_SB_.SBCA */
+            Local0 &= Zero
+            Local0 |= 0x08
+            SBCA = Local0
+            Sleep (0x02)
+            Local0 = SBCA /* \_SB_.SBCA */
+            Sleep (0x02)
+            Local2 = Arg1
+            SE0A = Local2
+            Sleep (0x02)
+            SE1A = Local2
+            Sleep (0x02)
+            SBDA = Local2
+            Sleep (0x02)
+            Local0 = SBCA /* \_SB_.SBCA */
+            Local0 &= Zero
+            Local0 |= 0x48
+            SBCA = Local0
+            Sleep (0x02)
+            Local1 = SMSA /* \_SB_.SMSA */
+            While (!(Local1 & One))
+            {
+                Local1 = SMSA /* \_SB_.SMSA */
+                If ((Local1 & 0x1C))
+                {
+                    Return (One)
+                }
+
+                If ((Local1 & 0x02))
+                {
+                    Break
+                }
+
+                Sleep (0x02)
+            }
+
+            Local1 = SMSA /* \_SB_.SMSA */
+            While ((Local1 & One))
+            {
+                Local1 = SMSA /* \_SB_.SMSA */
+                Sleep (0x02)
+            }
+
+            Return (Zero)
+        }
+
+        OperationRegion (IOOR, SystemIO, SIOP, 0x02)
+        Field (IOOR, ByteAcc, NoLock, Preserve)
+        {
+            IOID,   8, 
+            IODT,   8
+        }
+
+        IndexField (IOID, IODT, ByteAcc, NoLock, Preserve)
+        {
+            Offset (0x07), 
+            CR07,   8, 
+            Offset (0x81), 
+            CR81,   8, 
+            CR82,   8, 
+            Offset (0x88), 
+            CR88,   8, 
+            CR89,   8, 
+            CR8A,   8, 
+            Offset (0x91), 
+            CR91,   8, 
+            CR92,   8, 
+            Offset (0xA1), 
+            CRA1,   8, 
+            CRA2,   8, 
+            Offset (0xB1), 
+            CRB1,   8, 
+            CRB2,   8, 
+            Offset (0xC1), 
+            CRC1,   8, 
+            CRC2,   8, 
+            Offset (0xD1), 
+            CRD1,   8, 
+            CRD2,   8, 
+            Offset (0xE0), 
+            CRE0,   8, 
+            CRE1,   8, 
+            CRE2,   8, 
+            CRE3,   8, 
+            Offset (0xF0), 
+            CRF0,   8, 
+            CRF1,   8, 
+            CRF2,   8, 
+            Offset (0xF5), 
+            CRF5,   8, 
+            CRF6,   8
+        }
+
+        Method (ENFG, 1, NotSerialized)
+        {
+            IOID = 0x87
+            IOID = 0x87
+            CR07 = Arg0
+        }
+
+        Method (EXFG, 0, NotSerialized)
+        {
+            IOID = 0xAA
+        }
+
+        Method (RSIO, 1, NotSerialized)
+        {
+            IOID = Arg0
+            Return (IODT) /* \_SB_.IODT */
+        }
+
+        Method (WSIO, 2, NotSerialized)
+        {
+            IOID = Arg0
+            IODT = Arg1
+        }
+
+        Method (RWIO, 3, NotSerialized)
+        {
+            WSIO (Arg0, ((RSIO (Arg0) & Arg1) | Arg2))
+        }
+
+        Name (IPSW, Package (0x02)
+        {
+            Package (0x04)
+            {
+                0x87, 
+                One, 
+                0x55, 
+                0x55
+            }, 
+
+            Package (0x04)
+            {
+                0x87, 
+                One, 
+                0x55, 
+                0xAA
+            }
+        })
+        Method (SLDN, 1, NotSerialized)
+        {
+            Local1 = Zero
+            If ((SIOP == 0x2E))
+            {
+                Local1 = Zero
+            }
+
+            If ((SIOP == 0x4E))
+            {
+                Local1 = One
+            }
+
+            Local0 = Zero
+            While ((Local0 != 0x04))
+            {
+                IOID = DerefOf (DerefOf (IPSW [Local1]) [Local0])
+                Local0++
+            }
+
+            WSIO (0x07, Arg0)
+        }
+
+        OperationRegion (HWIO, SystemIO, HWMI, 0x02)
+        Field (HWIO, ByteAcc, NoLock, Preserve)
+        {
+            HWII,   8, 
+            HWID,   8
+        }
+
+        IndexField (HWII, HWID, ByteAcc, NoLock, Preserve)
+        {
+            Offset (0x20), 
+            HW20,   8, 
+            HW21,   8, 
+            HW22,   8, 
+            HW23,   8, 
+            HW24,   8, 
+            HW25,   8, 
+            HW26,   8, 
+            HW27,   8, 
+            Offset (0x70), 
+            HW70,   8, 
+            Offset (0x72), 
+            HW72,   8, 
+            Offset (0x74), 
+            HW74,   8, 
+            Offset (0x7A), 
+            HW7A,   8, 
+            Offset (0x7E), 
+            HW7E,   8, 
+            Offset (0x96), 
+            HW96,   8, 
+            Offset (0xA0), 
+            HWA0,   8, 
+            HWA1,   8, 
+            Offset (0xA3), 
+            HWA3,   8, 
+            Offset (0xA6), 
+            HWA6,   8, 
+            HWA7,   8, 
+            HWA8,   8, 
+            HWA9,   8, 
+            Offset (0xAB), 
+            HWAB,   8, 
+            HWAC,   8, 
+            HWAD,   8, 
+            HWAE,   8, 
+            Offset (0xB0), 
+            HWB0,   8, 
+            HWB1,   8, 
+            Offset (0xB3), 
+            HWB3,   8, 
+            Offset (0xB6), 
+            HWB6,   8, 
+            HWB7,   8, 
+            HWB8,   8, 
+            HWB9,   8, 
+            Offset (0xBB), 
+            HWBB,   8, 
+            HWBC,   8, 
+            HWBD,   8, 
+            HWBE,   8, 
+            Offset (0xC0), 
+            HWC0,   8, 
+            HWC1,   8, 
+            Offset (0xC3), 
+            HWC3,   8, 
+            Offset (0xC6), 
+            HWC6,   8, 
+            HWC7,   8, 
+            HWC8,   8, 
+            HWC9,   8, 
+            Offset (0xCB), 
+            HWCB,   8, 
+            HWCC,   8, 
+            HWCD,   8, 
+            HWCE,   8
+        }
+
+        OperationRegion (ECIO, SystemIO, 0x60, 0x10)
+        Field (ECIO, ByteAcc, NoLock, Preserve)
+        {
+            Offset (0x01), 
+            IO61,   8, 
+            IO1I,   8, 
+            Offset (0x06), 
+            IO1D,   8, 
+            Offset (0x08), 
+            IO2I,   8, 
+            Offset (0x0C), 
+            IO2D,   8
+        }
+
+        OperationRegion (BPIO, SystemIO, 0x40, 0x04)
+        Field (BPIO, ByteAcc, NoLock, Preserve)
+        {
+            IO40,   8, 
+            IO41,   8, 
+            IO42,   8, 
+            IO43,   8
+        }
+
+        OperationRegion (GPGD, SystemIO, 0x0280, 0x04)
+        Field (GPGD, ByteAcc, NoLock, Preserve)
+        {
+            DIN1,   8, 
+            DIN2,   8, 
+            DOT2,   8
+        }
+
+        OperationRegion (GPGE, SystemIO, WWDT, 0x10)
+        Field (GPGE, ByteAcc, NoLock, Preserve)
+        {
+            Offset (0x05), 
+            WA15,   8, 
+            WA16,   8, 
+            Offset (0x0A), 
+            WA1A,   8
+        }
+
+        OperationRegion (GPGF, SystemIO, WDIO, 0x11)
+        Field (GPGF, ByteAcc, NoLock, Preserve)
+        {
+            Offset (0x02), 
+            DA8X,   8, 
+            DA7X,   8, 
+            DA6X,   8, 
+            DA5X,   8, 
+            DA0X,   8, 
+            DA1X,   8, 
+            DA2X,   8, 
+            DA3X,   8, 
+            DA4X,   8
+        }
+
+        Device (ISM)
+        {
+            Method (IB2U, 0, NotSerialized)
+            {
+                Local0 = IO1D /* \_SB_.IO1D */
+                While (((Local0 && One) == Zero))
+                {
+                    Sleep (0x05)
+                    Local0 = IO1D /* \_SB_.IO1D */
+                }
+            }
+
+            Method (IBFU, 0, NotSerialized)
+            {
+                Local0 = IO2D /* \_SB_.IO2D */
+                Local1 = 0x03FF
+                While (((Local1 > Zero) && ((Local0 && One) == Zero)))
+                {
+                    Sleep (0x05)
+                    Local0 = IO2D /* \_SB_.IO2D */
+                    Local1 -= One
+                }
+            }
+
+            Method (IBFR, 0, NotSerialized)
+            {
+                Local0 = IO2D /* \_SB_.IO2D */
+                Local1 = 0x03FF
+                While (((Local1 > Zero) && ((Local0 && 0x02) == 0x02)))
+                {
+                    Sleep (0x05)
+                    Local0 = IO2D /* \_SB_.IO2D */
+                    Local1 -= One
+                }
+            }
+
+            Method (IB2R, 0, NotSerialized)
+            {
+                Local0 = IO1D /* \_SB_.IO1D */
+                While (((Local0 && 0x02) == 0x02))
+                {
+                    Sleep (0x05)
+                    Local0 = IO1D /* \_SB_.IO1D */
+                }
+            }
+
+            Method (GTEC, 3, NotSerialized)
+            {
+                Acquire (ECAC, 0xFFFF)
+                Local0 = IO2I /* \_SB_.IO2I */
+                Sleep (0x0A)
+                IBFR ()
+                IO2D = Arg2
+                Sleep (0x0A)
+                IBFR ()
+                IO2I = Arg0
+                Sleep (0x0A)
+                IBFR ()
+                IO2I = Arg1
+                Sleep (0x0A)
+                IBFR ()
+                Sleep (0x0A)
+                IBFU ()
+                Release (ECAC)
+                Return (IO2I) /* \_SB_.IO2I */
+            }
+
+            Method (STEC, 4, NotSerialized)
+            {
+                Acquire (ECAC, 0xFFFF)
+                Sleep (0x05)
+                IBFR ()
+                IO2D = Arg2
+                Sleep (0x05)
+                IBFR ()
+                IO2I = Arg0
+                Sleep (0x05)
+                IBFR ()
+                IO2I = Arg1
+                Sleep (0x05)
+                IBFR ()
+                IO2I = Arg3
+                Sleep (0x05)
+                IBFR ()
+                Release (ECAC)
+            }
+
+            Method (GTE2, 3, NotSerialized)
+            {
+                Acquire (ECAC, 0xFFFF)
+                Sleep (0x05)
+                IB2R ()
+                IO1D = Arg2
+                Sleep (0x0A)
+                IB2R ()
+                IO1I = Arg0
+                Sleep (0x05)
+                IB2R ()
+                IO1I = Arg1
+                Sleep (0x05)
+                IB2R ()
+                Sleep (0x05)
+                IB2U ()
+                Release (ECAC)
+                Return (IO1I) /* \_SB_.IO1I */
+            }
+
+            Method (STE2, 4, NotSerialized)
+            {
+                Acquire (ECAC, 0xFFFF)
+                Sleep (0x05)
+                IB2R ()
+                IO1D = Arg2
+                Sleep (0x05)
+                IB2R ()
+                IO1I = Arg0
+                Sleep (0x05)
+                IB2R ()
+                IO1I = Arg1
+                Sleep (0x05)
+                IB2R ()
+                IO1I = Arg3
+                Sleep (0x05)
+                IB2R ()
+                Release (ECAC)
+            }
+
+            Mutex (SIOA, 0x00)
+            Mutex (ECAC, 0x00)
+            Method (GTMP, 2, Serialized)
+            {
+                CreateDWordField (Arg1, Zero, BUF0)
+                CreateDWordField (Arg1, 0x04, BUF1)
+                CreateDWordField (Arg1, 0x08, BUF2)
+                Switch ((Arg0 + Zero))
+                {
+                    Case (One)
+                    {
+                        BUF0 = GTEC (0x06, Zero, 0x88)
+                        BUF2 = Zero
+                    }
+                    Case (0x02)
+                    {
+                        BUF0 = GTEC (0x06, 0x02, 0x88)
+                        BUF2 = Zero
+                    }
+                    Case (0x03)
+                    {
+                        BUF0 = GTEC (0x06, 0x03, 0x88)
+                        BUF2 = Zero
+                    }
+
+                }
+            }
+
+            Method (GTHW, 1, NotSerialized)
+            {
+            }
+
+            Method (CNTF, 1, NotSerialized)
+            {
+                If ((((Arg0 == 0x0FFF) || (Arg0 == 0xFFFF)) || (Arg0 == Zero)))
+                {
+                    Local0 = Zero
+                }
+                Else
+                {
+                    Divide (0x0016E360, Arg0, Local1, Local0)
+                }
+
+                Return (Local0)
+            }
+
+            Method (GFAN, 2, Serialized)
+            {
+                CreateDWordField (Arg1, Zero, BUF0)
+                CreateDWordField (Arg1, 0x04, BUF1)
+                CreateDWordField (Arg1, 0x08, BUF2)
+                BUF0 = Zero
+                BUF2 = One
+                Switch ((Arg0 + Zero))
+                {
+                    Case (One)
+                    {
+                        BUF0 = (GTEC (F1SH, F1SL, 0x88) << 0x08)
+                        BUF0 |= GTEC (F1SH, (F1SL + One), 0x88) /* \_SB_.ISM_.GFAN.BUF0 */
+                        BUF2 = Zero
+                    }
+                    Case (0x02)
+                    {
+                        BUF0 = (GTEC (F2SH, F2SL, 0x88) << 0x08)
+                        BUF0 |= GTEC (F2SH, (F2SL + One), 0x88) /* \_SB_.ISM_.GFAN.BUF0 */
+                        BUF2 = Zero
+                    }
+                    Case (0x03)
+                    {
+                        BUF0 = (GTEC (F3SH, F3SL, 0x88) << 0x08)
+                        BUF0 |= GTEC (F3SH, (F3SL + One), 0x88) /* \_SB_.ISM_.GFAN.BUF0 */
+                        BUF2 = Zero
+                    }
+                    Case (0x04)
+                    {
+                    }
+                    Case (0x05)
+                    {
+                    }
+
+                }
+            }
+
+            Method (GSFN, 2, Serialized)
+            {
+                CreateDWordField (Arg1, Zero, BUF1)
+                CreateDWordField (Arg1, 0x04, BUF2)
+                CreateDWordField (Arg1, 0x08, BUF3)
+                BUF3 = One
+                Switch ((Arg0 + Zero))
+                {
+                    Case (One)
+                    {
+                        BUF3 = Zero
+                        BUF3 |= (IF1M << 0x03)
+                        BUF3 |= 0x02
+                        If ((GTEC (0x02, 0x20, 0x88) == Zero))
+                        {
+                            BUF3 |= 0x04
+                        }
+
+                        Local0 = GTEC (0x02, 0x2E, 0x88)
+                        If ((Local0 == Zero))
+                        {
+                            BUF3 &= 0xFF00FFFF
+                        }
+                        Else
+                        {
+                            BUF3 |= ((((Local0 * 0x0100) / 0x64) - One
+                                ) << 0x10)
+                        }
+
+                        BUF1 = GTEC (0x02, 0x30, 0x88)
+                        BUF1 |= (GTEC (0x02, 0x31, 0x88) << 0x08)
+                        BUF1 |= (GTEC (0x02, 0x32, 0x88) << 0x10)
+                        BUF1 |= (GTEC (0x02, 0x33, 0x88) << 0x18)
+                    }
+                    Case (0x02)
+                    {
+                        BUF3 = Zero
+                        BUF3 |= (IF2M << 0x03)
+                        BUF3 |= 0x02
+                        If ((GTEC (0x02, 0x21, 0x88) == Zero))
+                        {
+                            BUF3 |= 0x04
+                        }
+
+                        Local0 = GTEC (0x02, 0x2F, 0x88)
+                        If ((Local0 == Zero))
+                        {
+                            BUF3 &= 0xFF00FFFF
+                        }
+                        Else
+                        {
+                            BUF3 |= ((((Local0 * 0x0100) / 0x64) - One
+                                ) << 0x10)
+                        }
+
+                        BUF1 = GTEC (0x02, 0x34, 0x88)
+                        BUF1 |= (GTEC (0x02, 0x35, 0x88) << 0x08)
+                        BUF1 |= (GTEC (0x02, 0x36, 0x88) << 0x10)
+                        BUF1 |= (GTEC (0x02, 0x37, 0x88) << 0x18)
+                    }
+                    Case (0x03)
+                    {
+                        BUF3 = Zero
+                        BUF3 |= (IF3M << 0x03)
+                        BUF3 |= 0x02
+                        If ((GTEC (0x02, 0x22, 0x88) == Zero))
+                        {
+                            BUF3 |= 0x04
+                        }
+
+                        Local0 = GTEC (0x02, 0x3B, 0x88)
+                        If ((Local0 == Zero))
+                        {
+                            BUF3 &= 0xFF00FFFF
+                        }
+                        Else
+                        {
+                            BUF3 |= ((((Local0 * 0x0100) / 0x64) - One
+                                ) << 0x10)
+                        }
+
+                        BUF1 = GTEC (0x02, 0x3C, 0x88)
+                        BUF1 |= (GTEC (0x02, 0x3D, 0x88) << 0x08)
+                        BUF1 |= (GTEC (0x02, 0x3E, 0x88) << 0x10)
+                        BUF1 |= (GTEC (0x02, 0x3F, 0x88) << 0x18)
+                    }
+
+                }
+            }
+
+            Method (SSFN, 3, Serialized)
+            {
+                Switch ((ID02 + Zero))
+                {
+                    Case (One)
+                    {
+                        If (((Arg0 & 0x04) == Zero))
+                        {
+                            STEC (0x82, 0x20, 0x88, 0x80)
+                            STEC (0x82, 0x30, 0x88, ((Arg1 >> Zero) & 0xFF))
+                            STEC (0x82, 0x31, 0x88, ((Arg1 >> 0x08) & 0xFF))
+                            STEC (0x82, 0x32, 0x88, ((Arg1 >> 0x10) & 0xFF))
+                            STEC (0x82, 0x33, 0x88, ((Arg1 >> 0x18) & 0xFF))
+                        }
+                        Else
+                        {
+                            STEC (0x82, 0x20, 0x88, Zero)
+                            STEC (0x82, 0x2E, 0x88, Arg1)
+                        }
+
+                        Return (Zero)
+                    }
+                    Case (0x02)
+                    {
+                        If (((Arg0 & 0x04) == Zero))
+                        {
+                            STEC (0x82, 0x21, 0x88, 0x80)
+                            STEC (0x82, 0x34, 0x88, ((Arg1 >> Zero) & 0xFF))
+                            STEC (0x82, 0x35, 0x88, ((Arg1 >> 0x08) & 0xFF))
+                            STEC (0x82, 0x36, 0x88, ((Arg1 >> 0x10) & 0xFF))
+                            STEC (0x82, 0x37, 0x88, ((Arg1 >> 0x18) & 0xFF))
+                        }
+                        Else
+                        {
+                            STEC (0x82, 0x21, 0x88, Zero)
+                            STEC (0x82, 0x2F, 0x88, Arg1)
+                        }
+
+                        Return (Zero)
+                    }
+                    Case (0x03)
+                    {
+                        If (((Arg0 & 0x04) == Zero))
+                        {
+                            STEC (0x82, 0x22, 0x88, 0x80)
+                            STEC (0x82, 0x3C, 0x88, ((Arg1 >> Zero) & 0xFF))
+                            STEC (0x82, 0x3D, 0x88, ((Arg1 >> 0x08) & 0xFF))
+                            STEC (0x82, 0x3E, 0x88, ((Arg1 >> 0x10) & 0xFF))
+                            STEC (0x82, 0x3F, 0x88, ((Arg1 >> 0x18) & 0xFF))
+                        }
+                        Else
+                        {
+                            STEC (0x82, 0x22, 0x88, Zero)
+                            STEC (0x82, 0x3B, 0x88, Arg1)
+                        }
+
+                        Return (Zero)
+                    }
+
+                }
+
+                Return (0xFFFFFFFF)
+            }
+
+            Method (CNTV, 3, NotSerialized)
+            {
+                Return (Divide (((0x08 * Arg0) * (Arg1 + Arg2)), 
+                    Arg2, Local1, Local0))
+            }
+
+            Method (GVOT, 2, Serialized)
+            {
+                CreateDWordField (Arg1, Zero, BUF0)
+                CreateDWordField (Arg1, 0x04, BUF1)
+                CreateDWordField (Arg1, 0x08, BUF2)
+                BUF0 = Zero
+                BUF2 = One
+                Switch ((Arg0 + Zero))
+                {
+                    Case (One)
+                    {
+                        BUF0 = CNTV (HW21, One, 0x0A)
+                        BUF2 = Zero
+                    }
+                    Case (0x02)
+                    {
+                        BUF0 = CNTV (HW22, 0xC8, 0x2F)
+                        BUF2 = Zero
+                    }
+                    Case (0x03)
+                    {
+                        BUF0 = CNTV (HW23, 0xC8, 0x14)
+                        BUF2 = Zero
+                    }
+                    Case (0x04)
+                    {
+                        BUF0 = CNTV (HW24, 0x64, 0xC8)
+                        BUF2 = Zero
+                    }
+                    Case (0x05)
+                    {
+                        BUF0 = (HW27 * 0x18)
+                        BUF2 = Zero
+                    }
+                    Case (0x06)
+                    {
+                        BUF0 = (HW20 * 0x10)
+                        BUF2 = Zero
+                    }
+                    Case (0x07)
+                    {
+                        BUF0 = (HW25 * 0x10)
+                        BUF2 = Zero
+                    }
+                    Case (0x08)
+                    {
+                        BUF0 = (HW26 * 0x10)
+                        BUF2 = Zero
+                    }
+
+                }
+            }
+
+            Method (WDT, 3, NotSerialized)
+            {
+                If ((Arg0 == 0x02))
+                {
+                    Return (0xFF)
+                }
+
+                Acquire (ECAC, 0xFFFF)
+                If ((Arg0 == Zero))
+                {
+                    If ((Arg1 == Zero))
+                    {
+                        STEC (0x80, 0x40, 0x88, Zero)
+                        STEC (0x80, 0x41, 0x88, 0xFF)
+                    }
+                    Else
+                    {
+                        STEC (0x80, 0x41, 0x88, Arg1)
+                        If ((Arg2 == Zero))
+                        {
+                            STEC (0x80, 0x40, 0x88, One)
+                        }
+                        Else
+                        {
+                            STEC (0x80, 0x40, 0x88, 0x03)
+                        }
+                    }
+                }
+                Else
+                {
+                    STEC (0x80, 0x40, 0x88, Zero)
+                    STEC (0x80, 0x41, 0x88, 0xFF)
+                }
+
+                Release (ECAC)
+                Return (Zero)
+            }
+
+            Method (GDIO, 1, NotSerialized)
+            {
+                CreateDWordField (Arg0, Zero, BUF1)
+                CreateDWordField (Arg0, 0x04, BUF2)
+                CreateDWordField (Arg0, 0x08, BUF3)
+                Acquire (SIOA, 0xFFFF)
+                BUF1 = (0x0C000000 | ((GTEC (One, 0x51, 0x88) & 0x0F) | (
+                    (GTEC (One, 0x71, 0x88) & 0x03) << 0x04)))
+                BUF2 = (0x0C000000 | (((GTEC (One, 0x51, 0x88) >> 0x04) & 
+                    0x0F) | ((GTEC (One, 0x71, 0x88) & 0x0C) << 0x02)))
+                BUF3 = Zero
+                Release (SIOA)
+            }
+
+            Method (SDIO, 1, NotSerialized)
+            {
+                Acquire (SIOA, 0xFFFF)
+                STEC (0x81, 0x51, 0x88, (((Arg0 & 0x0F) << 0x04) & 
+                    0xF0))
+                STEC (0x81, 0x71, 0x88, (((Arg0 & 0x30) >> 0x02) & 
+                    0x0C))
+                Release (SIOA)
+            }
+
+            Method (BEEP, 0, NotSerialized)
+            {
+                IO61 &= 0xFC
+                IO43 = 0x54
+                IO41 = 0x12
+                IO43 = 0xB6
+                IO42 = 0xAB
+                IO42 = One
+                IO61 |= 0x03
+                Sleep (0x1E)
+                IO61 &= 0xFC
+            }
+
+            Method (SETV, 1, NotSerialized)
+            {
+            }
+
+            Name (OTID, Package (0x15)
+            {
+                One, 
+                0x01010000, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                "Cpu Temp", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                ""
+            })
+            Name (OFID, Package (0x15)
+            {
+                One, 
+                0x02010000, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                "CPU_FAN1", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                ""
+            })
+            Name (SFID, Package (0x15)
+            {
+                One, 
+                0x06010000, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                "CPU_FAN1", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                ""
+            })
+            Name (OVID, Package (0x15)
+            {
+                0x08, 
+                0x03010000, 
+                0x03030000, 
+                0x03040000, 
+                0x03050000, 
+                0x03060000, 
+                0x03070000, 
+                0x03080000, 
+                Zero, 
+                Zero, 
+                Zero, 
+                "+CPU_CORE", 
+                "+12VS", 
+                "+1.5VDimm", 
+                "VSB5V", 
+                "VCC3V", 
+                "VSB3V", 
+                "VBAT", 
+                "", 
+                "", 
+                ""
+            })
+            Name (OBIT, Package (0x80)
+            {
+                0x01010000, 
+                0x50, 
+                0x14, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x01020000, 
+                0x3C, 
+                0x14, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x01030000, 
+                0x3F, 
+                0x17, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x01040000, 
+                0x42, 
+                0x1A, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x02010000, 
+                0x2710, 
+                0x07D0, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x02020000, 
+                0x2AF8, 
+                0x0834, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x02030000, 
+                0x2EE0, 
+                0x0898, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03010000, 
+                0x05DC, 
+                0x02BC, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03020000, 
+                0x157C, 
+                0x1194, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03030000, 
+                0x32C8, 
+                0x2AF8, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03040000, 
+                0x0640, 
+                0x0578, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03050000, 
+                0x157C, 
+                0x1194, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03060000, 
+                0x0ED8, 
+                0x0AF0, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03070000, 
+                0x0ED8, 
+                0x0AF0, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                0x03080000, 
+                0x0ED8, 
+                0x0AF0, 
+                One, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero, 
+                Zero
+            })
+            Name (ID01, Zero)
+            Name (ID02, Zero)
+            Method (SOID, 1, NotSerialized)
+            {
+                ID01 = (Arg0 >> 0x18)
+                ID02 = ((Arg0 & 0x00FF0000) >> 0x10)
+            }
+
+            Method (WROW, 4, NotSerialized)
+            {
+                Name (IFPK, Package (0x06)
+                {
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero
+                })
+                CreateDWordField (Arg0, Zero, BUF0)
+                CreateDWordField (Arg0, 0x04, BUF1)
+                CreateDWordField (Arg0, 0x08, BUF2)
+                CreateDWordField (Arg0, 0x0C, BUF3)
+                CreateDWordField (Arg0, 0x10, BUF4)
+                CreateDWordField (Arg0, 0x14, BUF5)
+                IFPK [Zero] = BUF0 /* \_SB_.ISM_.WROW.BUF0 */
+                IFPK [One] = BUF1 /* \_SB_.ISM_.WROW.BUF1 */
+                IFPK [0x02] = BUF2 /* \_SB_.ISM_.WROW.BUF2 */
+                IFPK [0x03] = BUF3 /* \_SB_.ISM_.WROW.BUF3 */
+                IFPK [0x04] = BUF4 /* \_SB_.ISM_.WROW.BUF4 */
+                IFPK [0x05] = BUF5 /* \_SB_.ISM_.WROW.BUF5 */
+                Local0 = Arg3
+                Local1 = Zero
+                While (Local0)
+                {
+                    Arg1 [((Arg2 * Arg3) + Local1)] = DerefOf (
+                        IFPK [Local1])
+                    Local1++
+                    Local0--
+                }
+            }
+
+            Method (GROW, 4, NotSerialized)
+            {
+                Name (IFPK, Package (0x06)
+                {
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero, 
+                    Zero
+                })
+                Local0 = Arg3
+                Local1 = Zero
+                While (Local0)
+                {
+                    IFPK [Local1] = DerefOf (Arg0 [((Arg2 * Arg3
+                        ) + Local1)])
+                    Local1++
+                    Local0--
+                }
+
+                CreateDWordField (Arg1, Zero, BUF0)
+                CreateDWordField (Arg1, 0x04, BUF1)
+                CreateDWordField (Arg1, 0x08, BUF2)
+                CreateDWordField (Arg1, 0x0C, BUF3)
+                CreateDWordField (Arg1, 0x10, BUF4)
+                CreateDWordField (Arg1, 0x14, BUF5)
+                BUF0 = DerefOf (IFPK [Zero])
+                BUF1 = DerefOf (IFPK [One])
+                BUF2 = DerefOf (IFPK [0x02])
+                BUF3 = DerefOf (IFPK [0x03])
+                BUF4 = DerefOf (IFPK [0x04])
+                BUF5 = DerefOf (IFPK [0x05])
+            }
+
+            Method (CPTB, 2, NotSerialized)
+            {
+                Name (LOID, Zero)
+                CreateDWordField (Arg1, Zero, BUF0)
+                CreateDWordField (Arg1, 0x04, BUF1)
+                CreateDWordField (Arg1, 0x08, BUF2)
+                CreateDWordField (Arg1, 0x0C, BUF3)
+                CreateDWordField (Arg1, 0x10, BUF4)
+                CreateDWordField (Arg1, 0x14, BUF5)
+                CreateDWordField (Arg1, 0x18, BUF6)
+                CreateDWordField (Arg1, 0x1C, BUF7)
+                Local0 = Zero
+                LOID = DerefOf (OBIT [Local0])
+                While (LOID)
+                {
+                    If ((LOID == Arg0))
+                    {
+                        BUF0 = DerefOf (OBIT [(Local0 + Zero)])
+                        BUF1 = DerefOf (OBIT [(Local0 + One)])
+                        BUF2 = DerefOf (OBIT [(Local0 + 0x02)])
+                        BUF3 = DerefOf (OBIT [(Local0 + 0x03)])
+                        BUF4 = DerefOf (OBIT [(Local0 + 0x04)])
+                        BUF5 = DerefOf (OBIT [(Local0 + 0x05)])
+                        BUF6 = DerefOf (OBIT [(Local0 + 0x06)])
+                        Break
+                    }
+
+                    Local0 += 0x08
+                    LOID = DerefOf (OBIT [Local0])
+                }
+
+                If ((LOID == Zero))
+                {
+                    BUF7 = One
+                }
+                Else
+                {
+                    BUF7 = Zero
+                }
+            }
+
+            Method (CBTP, 1, NotSerialized)
+            {
+                Name (LOID, Zero)
+                CreateDWordField (Arg0, Zero, BUF0)
+                CreateDWordField (Arg0, 0x04, BUF1)
+                CreateDWordField (Arg0, 0x08, BUF2)
+                CreateDWordField (Arg0, 0x0C, BUF3)
+                CreateDWordField (Arg0, 0x10, BUF4)
+                CreateDWordField (Arg0, 0x14, BUF5)
+                Local0 = Zero
+                LOID = DerefOf (OBIT [Local0])
+                While (LOID)
+                {
+                    If ((LOID == BUF0))
+                    {
+                        OBIT [(Local0 + Zero)] = BUF0 /* \_SB_.ISM_.CBTP.BUF0 */
+                        OBIT [(Local0 + One)] = BUF1 /* \_SB_.ISM_.CBTP.BUF1 */
+                        OBIT [(Local0 + 0x02)] = BUF2 /* \_SB_.ISM_.CBTP.BUF2 */
+                        OBIT [(Local0 + 0x03)] = BUF3 /* \_SB_.ISM_.CBTP.BUF3 */
+                        OBIT [(Local0 + 0x04)] = BUF4 /* \_SB_.ISM_.CBTP.BUF4 */
+                        OBIT [(Local0 + 0x05)] = BUF5 /* \_SB_.ISM_.CBTP.BUF5 */
+                        Break
+                    }
+
+                    Local0 += 0x06
+                    LOID = DerefOf (OBIT [Local0])
+                }
+
+                If ((LOID == Zero))
+                {
+                    Return (0xFF)
+                }
+
+                Return (Zero)
+            }
+
+            Method (ABS, 2, NotSerialized)
+            {
+                If ((Arg0 < Arg1))
+                {
+                    Return ((Arg1 - Arg0))
+                }
+                Else
+                {
+                    Return ((Arg0 - Arg1))
+                }
+            }
+
+            Name (TSBF, Buffer (0x20)
+            {
+                /* 0000 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                /* 0008 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                /* 0010 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                /* 0018 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   // ........
+            })
+            Name (GVBF, Buffer (0x05)
+            {
+                 0x00, 0x00, 0x00, 0x00, 0x00                     // .....
+            })
+            CreateDWordField (GVBF, Zero, GVB1)
+            CreateByteField (GVBF, 0x04, GVB2)
+            Method (IM01, 1, Serialized)
+            {
+                Switch ((Arg0 + Zero))
+                {
+                    Case (Zero)
+                    {
+                        Return (OTID) /* \_SB_.ISM_.OTID */
+                    }
+                    Case (One)
+                    {
+                        Return (OFID) /* \_SB_.ISM_.OFID */
+                    }
+                    Case (0x02)
+                    {
+                        Return (OVID) /* \_SB_.ISM_.OVID */
+                    }
+                    Case (0x05)
+                    {
+                        Return (SFID) /* \_SB_.ISM_.SFID */
+                    }
+
+                }
+
+                Return (Zero)
+            }
+
+            Method (IM02, 1, NotSerialized)
+            {
+                Name (INFO, Buffer (0x20)
+                {
+                    /* 0000 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                    /* 0008 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                    /* 0010 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                    /* 0018 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   // ........
+                })
+                CreateDWordField (INFO, Zero, IFID)
+                CreateDWordField (INFO, 0x04, IFHI)
+                CreateDWordField (INFO, 0x08, IFLO)
+                CreateDWordField (INFO, 0x0C, IFSP)
+                CreateDWordField (INFO, 0x10, IFR1)
+                CreateDWordField (INFO, 0x14, IFR2)
+                CreateDWordField (INFO, 0x18, IFR3)
+                CreateDWordField (INFO, 0x1C, IFST)
+                CPTB (Arg0, INFO)
+                Return (INFO) /* \_SB_.ISM_.IM02.INFO */
+            }
+
+            Method (IM03, 1, Serialized)
+            {
+                Name (VALU, Buffer (0x0C)
+                {
+                    /* 0000 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                    /* 0008 */  0x00, 0x00, 0x00, 0x00                           // ....
+                })
+                CreateDWordField (VALU, Zero, VAVA)
+                CreateDWordField (VALU, 0x04, RESR)
+                CreateDWordField (VALU, 0x08, VAST)
+                SOID (Arg0)
+                VAST = One
+                Switch ((ID01 + Zero))
+                {
+                    Case (One)
+                    {
+                        GTMP (ID02, VALU)
+                    }
+                    Case (0x02)
+                    {
+                        GFAN (ID02, VALU)
+                    }
+                    Case (0x03)
+                    {
+                        GVOT (ID02, VALU)
+                    }
+                    Case (0x06)
+                    {
+                        GSFN (ID02, VALU)
+                    }
+
+                }
+
+                Return (VALU) /* \_SB_.ISM_.IM03.VALU */
+            }
+
+            Method (IM04, 3, Serialized)
+            {
+                SOID (Arg0)
+                Switch ((ID01 + Zero))
+                {
+                    Case (One)
+                    {
+                    }
+                    Case (0x02)
+                    {
+                    }
+                    Case (0x03)
+                    {
+                    }
+                    Case (0x06)
+                    {
+                        Return (SSFN (Arg0, Arg1, Arg2))
+                    }
+
+                }
+
+                Return (0xFFFFFFFF)
+            }
+
+            Method (IM05, 3, NotSerialized)
+            {
+                Return (WDT (Arg0, Arg1, Arg2))
+            }
+
+            Method (IM06, 1, NotSerialized)
+            {
+                Name (DIOV, Buffer (0x0C)
+                {
+                    /* 0000 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
+                    /* 0008 */  0x00, 0x00, 0x00, 0x00                           // ....
+                })
+                CreateDWordField (DIOV, Zero, VAL1)
+                CreateDWordField (DIOV, 0x04, VAL2)
+                CreateDWordField (DIOV, 0x08, VASS)
+                VASS = Zero
+                If ((((Arg0 >> 0x18) & One) == Zero))
+                {
+                    GDIO (DIOV)
+                }
+                Else
+                {
+                    SDIO (Arg0)
+                }
+
+                Return (DIOV) /* \_SB_.ISM_.IM06.DIOV */
+            }
+
+            Method (IM07, 0, NotSerialized)
+            {
+                BEEP ()
+            }
+
+            Name (WQBA, Buffer (0x08B9)
+            {
+                /* 0000 */  0x46, 0x4F, 0x4D, 0x42, 0x01, 0x00, 0x00, 0x00,  // FOMB....
+                /* 0008 */  0xA9, 0x08, 0x00, 0x00, 0xA6, 0x31, 0x00, 0x00,  // .....1..
+                /* 0010 */  0x44, 0x53, 0x00, 0x01, 0x1A, 0x7D, 0xDA, 0x54,  // DS...}.T
+                /* 0018 */  0xA8, 0x5A, 0x98, 0x00, 0x01, 0x06, 0x18, 0x42,  // .Z.....B
+                /* 0020 */  0x10, 0x0D, 0x10, 0x22, 0x21, 0x04, 0x12, 0x01,  // ..."!...
+                /* 0028 */  0xA1, 0xC8, 0x2C, 0x0C, 0x86, 0x10, 0x38, 0x2E,  // ..,...8.
+                /* 0030 */  0x84, 0x1C, 0x40, 0x48, 0x1C, 0x14, 0x4A, 0x08,  // ..@H..J.
+                /* 0038 */  0x84, 0xFA, 0x13, 0xC8, 0xAF, 0x00, 0x84, 0x0E,  // ........
+                /* 0040 */  0x05, 0xC8, 0x14, 0x60, 0x50, 0x80, 0x53, 0x04,  // ...`P.S.
+                /* 0048 */  0x11, 0xF4, 0x2A, 0xC0, 0xA6, 0x00, 0x93, 0x02,  // ..*.....
+                /* 0050 */  0x2C, 0x0A, 0xD0, 0x2E, 0xC0, 0xB2, 0x00, 0xDD,  // ,.......
+                /* 0058 */  0x02, 0xA4, 0xC3, 0x12, 0x91, 0xE0, 0x28, 0x31,  // ......(1
+                /* 0060 */  0xE0, 0x28, 0x9D, 0xD8, 0xC2, 0x0D, 0x1B, 0xBC,  // .(......
+                /* 0068 */  0x50, 0x14, 0xCD, 0x20, 0x4A, 0x82, 0xCA, 0x05,  // P.. J...
+                /* 0070 */  0xF8, 0x46, 0x10, 0x78, 0xB9, 0x02, 0x24, 0x4F,  // .F.x..$O
+                /* 0078 */  0x40, 0x9A, 0x05, 0x18, 0x16, 0x60, 0x5D, 0x80,  // @....`].
+                /* 0080 */  0xEC, 0x21, 0x50, 0xA9, 0x43, 0x40, 0xC9, 0x19,  // .!P.C@..
+                /* 0088 */  0x02, 0x6A, 0x00, 0xAD, 0x4E, 0x40, 0xF8, 0x95,  // .j..N@..
+                /* 0090 */  0x4E, 0x09, 0x49, 0x10, 0xCE, 0x58, 0xC5, 0xE3,  // N.I..X..
+                /* 0098 */  0x6B, 0x16, 0x4D, 0xCF, 0x49, 0xCE, 0x31, 0xE4,  // k.M.I.1.
+                /* 00A0 */  0x78, 0x5C, 0xE8, 0x41, 0x70, 0xE9, 0x16, 0x40,  // x\.Ap..@
+                /* 00A8 */  0x98, 0xFC, 0x21, 0x4B, 0x2C, 0x0C, 0x4A, 0xC2,  // ..!K,.J.
+                /* 00B0 */  0x58, 0xA8, 0x8B, 0x51, 0xA3, 0x46, 0xCA, 0x06,  // X..Q.F..
+                /* 00B8 */  0x64, 0x88, 0xD2, 0x46, 0x8D, 0x1E, 0xD0, 0xF9,  // d..F....
+                /* 00C0 */  0x1D, 0xC9, 0xD9, 0x1D, 0xDD, 0x91, 0x24, 0x30,  // ......$0
+                /* 00C8 */  0xEA, 0x31, 0x1D, 0xE3, 0xB7, 0xC0, 0x19, 0x45,  // .1.....E
+                /* 00D0 */  0x8D, 0xD1, 0x1C, 0x14, 0x09, 0x37, 0x68, 0xB4,  // .....7h.
+                /* 00D8 */  0x44, 0x58, 0x8D, 0x2B, 0xF6, 0x99, 0x59, 0xF8,  // DX.+..Y.
+                /* 00E0 */  0xB0, 0x84, 0x71, 0x04, 0x07, 0x76, 0xB0, 0x16,  // ..q..v..
+                /* 00E8 */  0x0D, 0x23, 0xB4, 0x82, 0xE0, 0x34, 0x88, 0xA3,  // .#...4..
+                /* 00F0 */  0x88, 0x12, 0x86, 0xE1, 0x19, 0x33, 0xD0, 0x51,  // .....3.Q
+                /* 00F8 */  0x32, 0xA4, 0x30, 0x41, 0x4F, 0x20, 0xC8, 0xC9,  // 2.0AO ..
+                /* 0100 */  0x33, 0x2C, 0x43, 0x9C, 0x01, 0xC7, 0x8A, 0x11,  // 3,C.....
+                /* 0108 */  0x2A, 0x24, 0x66, 0x20, 0xC1, 0xFF, 0xFF, 0x27,  // *$f ...'
+                /* 0110 */  0xD0, 0x35, 0x86, 0x3C, 0x03, 0x91, 0x7B, 0xC0,  // .5.<..{.
+                /* 0118 */  0x09, 0x04, 0x89, 0x1E, 0x25, 0xB8, 0x71, 0x8D,  // ....%.q.
+                /* 0120 */  0xCA, 0xC6, 0x74, 0x36, 0xB8, 0x81, 0x99, 0x20,  // ..t6... 
+                /* 0128 */  0xCE, 0xE1, 0x61, 0x64, 0x40, 0x68, 0x02, 0xF1,  // ..ad@h..
+                /* 0130 */  0x63, 0x87, 0x4F, 0x60, 0xF7, 0xC7, 0x01, 0x29,  // c.O`...)
+                /* 0138 */  0x44, 0xD0, 0x85, 0xE0, 0x4C, 0x6B, 0x14, 0x60,  // D...Lk.`
+                /* 0140 */  0xED, 0xEC, 0x20, 0x5B, 0x10, 0x3A, 0x0B, 0xC4,  // .. [.:..
+                /* 0148 */  0x6A, 0x0C, 0x45, 0x10, 0x11, 0x82, 0x46, 0x31,  // j.E...F1
+                /* 0150 */  0x5E, 0x84, 0x50, 0x21, 0xA2, 0x44, 0x3D, 0xE7,  // ^.P!.D=.
+                /* 0158 */  0x20, 0xB5, 0x09, 0x50, 0x06, 0x22, 0xB4, 0x60,  //  ..P.".`
+                /* 0160 */  0x46, 0x60, 0xF6, 0x4F, 0x13, 0xEC, 0x31, 0xA1,  // F`.O..1.
+                /* 0168 */  0x1F, 0x81, 0x45, 0x9C, 0x08, 0x64, 0x64, 0x34,  // ..E..dd4
+                /* 0170 */  0xF4, 0xB0, 0xE0, 0xE1, 0xF8, 0x3C, 0x70, 0xF2,  // .....<p.
+                /* 0178 */  0xCF, 0x0F, 0xC7, 0xD3, 0x36, 0x8C, 0x42, 0x43,  // ....6.BC
+                /* 0180 */  0x08, 0xD4, 0xA2, 0x4E, 0x16, 0x94, 0xC0, 0x52,  // ...N...R
+                /* 0188 */  0x4E, 0x06, 0x04, 0xEF, 0xB8, 0x82, 0x1E, 0xE0,  // N.......
+                /* 0190 */  0xA9, 0x1B, 0xF9, 0xCC, 0xFC, 0xD1, 0xF0, 0x2C,  // .......,
+                /* 0198 */  0x9F, 0x11, 0x30, 0x63, 0xF0, 0x50, 0x8F, 0x33,  // ..0c.P.3
+                /* 01A0 */  0xE0, 0x11, 0xB2, 0x43, 0x82, 0x01, 0xF1, 0xDE,  // ...C....
+                /* 01A8 */  0x6F, 0x05, 0x64, 0x04, 0xEF, 0x08, 0x06, 0xF4,  // o.d.....
+                /* 01B0 */  0x41, 0xE1, 0xF9, 0x00, 0x2C, 0x03, 0x63, 0x8A,  // A...,.c.
+                /* 01B8 */  0xAF, 0x00, 0xF4, 0x44, 0xC0, 0x0E, 0x09, 0x07,  // ...D....
+                /* 01C0 */  0xFD, 0xD0, 0xF0, 0x6A, 0x71, 0x80, 0x26, 0xB0,  // ...jq.&.
+                /* 01C8 */  0xAC, 0xF3, 0x03, 0x7A, 0xD2, 0xD1, 0x02, 0xC6,  // ...z....
+                /* 01D0 */  0x6C, 0xF6, 0x8E, 0x41, 0x08, 0xDE, 0x03, 0x7C,  // l..A...|
+                /* 01D8 */  0x55, 0xF0, 0x71, 0xC4, 0xA2, 0xD6, 0x27, 0x27,  // U.q...''
+                /* 01E0 */  0xEB, 0xF2, 0x90, 0x29, 0xB8, 0x87, 0xC0, 0x65,  // ...)...e
+                /* 01E8 */  0xC0, 0xE9, 0x84, 0xE2, 0x11, 0x83, 0x43, 0x01,  // ......C.
+                /* 01F0 */  0x84, 0xFE, 0xFF, 0x23, 0x06, 0xFF, 0xBC, 0x8E,  // ...#....
+                /* 01F8 */  0x18, 0x2C, 0xB7, 0x04, 0xAB, 0x3A, 0x6E, 0x68,  // .,...:nh
+                /* 0200 */  0x10, 0x87, 0xDC, 0xFC, 0x00, 0xC8, 0xDD, 0xC2,  // ........
+                /* 0208 */  0x63, 0x66, 0x73, 0x39, 0x2B, 0x76, 0x46, 0xE1,  // cfs9+vF.
+                /* 0210 */  0xC3, 0xE3, 0xC3, 0xF0, 0x88, 0x5F, 0x1C, 0x8A,  // ....._..
+                /* 0218 */  0x05, 0x91, 0x0A, 0x08, 0xFD, 0x6C, 0x34, 0x72,  // .....l4r
+                /* 0220 */  0x90, 0x38, 0x3B, 0x42, 0x88, 0xC0, 0x82, 0xC6,  // .8;B....
+                /* 0228 */  0x2C, 0x11, 0x43, 0x47, 0x41, 0xFB, 0xF0, 0xC0,  // ,.CGA...
+                /* 0230 */  0xC6, 0x72, 0xCE, 0x4F, 0x25, 0x2C, 0xFE, 0x69,  // .r.O%,.i
+                /* 0238 */  0x87, 0x0E, 0x1E, 0x1C, 0x80, 0x1E, 0x3C, 0xF8,  // ......<.
+                /* 0240 */  0x05, 0x0E, 0x1E, 0x54, 0x63, 0x88, 0xF6, 0x70,  // ...Tc..p
+                /* 0248 */  0xC3, 0x0F, 0x22, 0x6F, 0x23, 0x1E, 0x38, 0xD8,  // .."o#.8.
+                /* 0250 */  0xE7, 0x80, 0x23, 0xB0, 0x3C, 0x08, 0xFD, 0xFF,  // ..#.<...
+                /* 0258 */  0x4F, 0x48, 0xF0, 0x7D, 0x4E, 0x9E, 0x0C, 0xE0,  // OH.}N...
+                /* 0260 */  0xD5, 0x05, 0x77, 0x44, 0x02, 0x2E, 0x23, 0xE0,  // ..wD..#.
+                /* 0268 */  0x61, 0xDE, 0x41, 0x3E, 0x0A, 0x51, 0xF9, 0x30,  // a.A>.Q.0
+                /* 0270 */  0xA8, 0xD3, 0x10, 0xC0, 0x9A, 0x2B, 0xD0, 0x5B,  // .....+.[
+                /* 0278 */  0x90, 0x4F, 0x43, 0xE0, 0xF8, 0xFF, 0x9F, 0x86,  // .OC.....
+                /* 0280 */  0xE0, 0xBD, 0x24, 0x7C, 0x1E, 0xB0, 0xE8, 0xB3,  // ..$|....
+                /* 0288 */  0x0C, 0xFA, 0x34, 0xC4, 0xA6, 0x76, 0x94, 0xA7,  // ..4..v..
+                /* 0290 */  0xF6, 0xC8, 0x40, 0x0E, 0x33, 0xA0, 0x3A, 0x0D,  // ..@.3.:.
+                /* 0298 */  0x01, 0x87, 0x18, 0xE7, 0x03, 0xD0, 0x78, 0xBB,  // ......x.
+                /* 02A0 */  0xCB, 0x80, 0x00, 0xE5, 0x69, 0xE8, 0x41, 0x80,  // ....i.A.
+                /* 02A8 */  0xE1, 0x3C, 0x18, 0xB0, 0x31, 0xF9, 0x88, 0xC0,  // .<..1...
+                /* 02B0 */  0x66, 0x13, 0x36, 0xCE, 0x5B, 0x01, 0x43, 0xF7,  // f.6.[.C.
+                /* 02B8 */  0x5C, 0x7D, 0x29, 0x30, 0xC8, 0xCB, 0x40, 0xD4,  // \})0..@.
+                /* 02C0 */  0x10, 0x51, 0x7D, 0x26, 0x81, 0xE9, 0xE1, 0x6C,  // .Q}&...l
+                /* 02C8 */  0x03, 0xCA, 0xE3, 0x91, 0x9D, 0x9C, 0xB3, 0x50,  // .......P
+                /* 02D0 */  0xD0, 0xBE, 0x5E, 0x1C, 0x9A, 0x07, 0xE3, 0xF3,  // ..^.....
+                /* 02D8 */  0x0A, 0x3B, 0x68, 0x81, 0xEB, 0x9C, 0x04, 0x9E,  // .;h.....
+                /* 02E0 */  0xFF, 0xFF, 0x59, 0x00, 0xEE, 0x49, 0x05, 0x7F,  // ..Y..I..
+                /* 02E8 */  0x16, 0x80, 0x77, 0x4B, 0x82, 0x3F, 0x66, 0xF0,  // ..wK.?f.
+                /* 02F0 */  0x1D, 0x6B, 0xC0, 0x71, 0xA2, 0xE0, 0xD7, 0x1A,  // .k.q....
+                /* 02F8 */  0xFC, 0xB1, 0x06, 0xF8, 0x48, 0x3C, 0x30, 0xA2,  // ....H<0.
+                /* 0300 */  0x44, 0x9D, 0x19, 0x01, 0xA5, 0xFF, 0xFF, 0x63,  // D......c
+                /* 0308 */  0x0D, 0xF0, 0x3D, 0x29, 0x3C, 0xD6, 0x80, 0x3D,  // ..=)<..=
+                /* 0310 */  0xD6, 0x99, 0x91, 0x1E, 0xCF, 0x7C, 0xF8, 0xC0,  // .....|..
+                /* 0318 */  0x6B, 0x3D, 0x08, 0x90, 0xF1, 0x9C, 0x55, 0xF0,  // k=....U.
+                /* 0320 */  0x04, 0x0E, 0x7B, 0x68, 0x04, 0xBA, 0xA7, 0x5E,  // ..{h...^
+                /* 0328 */  0xDC, 0x01, 0x01, 0xEE, 0xD0, 0xF0, 0x07, 0x0F,  // ........
+                /* 0330 */  0xF0, 0x49, 0x3A, 0xBB, 0x40, 0x19, 0x05, 0x06,  // .I:.@...
+                /* 0338 */  0x92, 0x2D, 0xD2, 0xE3, 0x05, 0xC7, 0xFF, 0xFF,  // .-......
+                /* 0340 */  0xEC, 0x02, 0x3C, 0x04, 0x8F, 0x17, 0x84, 0x43,  // ..<....C
+                /* 0348 */  0x3B, 0x8A, 0x33, 0x31, 0xE6, 0x13, 0xB1, 0x51,  // ;.31...Q
+                /* 0350 */  0x7C, 0x97, 0xF0, 0x55, 0x08, 0xD6, 0xC8, 0xC1,  // |..U....
+                /* 0358 */  0x18, 0xFE, 0xE0, 0x00, 0xE5, 0x10, 0x84, 0x8F,  // ........
+                /* 0360 */  0x7A, 0x70, 0x00, 0xD5, 0x79, 0x11, 0x38, 0x9C,  // zp..y.8.
+                /* 0368 */  0x5A, 0x70, 0x23, 0x87, 0x3B, 0xE8, 0x23, 0xE7,  // Zp#.;.#.
+                /* 0370 */  0xC3, 0x05, 0xE3, 0x8D, 0xD5, 0xE7, 0x1F, 0xF8,  // ........
+                /* 0378 */  0x1E, 0xA7, 0x21, 0xE4, 0x57, 0x02, 0xF6, 0xFF,  // ..!.W...
+                /* 0380 */  0x9F, 0x89, 0x4F, 0x40, 0xC0, 0x4F, 0xDC, 0xF1,  // ..O@.O..
+                /* 0388 */  0x07, 0x25, 0xE7, 0x04, 0x04, 0x50, 0xE8, 0xAA,  // .%...P..
+                /* 0390 */  0xF0, 0x04, 0x04, 0xF6, 0x40, 0x27, 0x20, 0x1A,  // ....@' .
+                /* 0398 */  0x1B, 0x42, 0xFF, 0xFF, 0x93, 0x07, 0xEE, 0x08,  // .B......
+                /* 03A0 */  0x8D, 0x0B, 0x7A, 0xFE, 0x01, 0xBA, 0x47, 0x0D,  // ..z...G.
+                /* 03A8 */  0xDC, 0xF1, 0x00, 0xEE, 0xC0, 0xF8, 0xB1, 0x03,  // ........
+                /* 03B0 */  0x7C, 0x87, 0x27, 0xE0, 0x73, 0xFA, 0x01, 0x0E,  // |.'.s...
+                /* 03B8 */  0x87, 0x27, 0xC0, 0xC1, 0xFF, 0xFF, 0xF0, 0x04,  // .'......
+                /* 03C0 */  0xCE, 0x33, 0x0F, 0x70, 0x38, 0x3C, 0x01, 0x3E,  // .3.p8<.>
+                /* 03C8 */  0x8E, 0x3F, 0xE0, 0x80, 0x78, 0xFC, 0x01, 0xB6,  // .?..x...
+                /* 03D0 */  0x39, 0xD5, 0x80, 0xB0, 0x00, 0xE7, 0x49, 0xBF,  // 9.....I.
+                /* 03D8 */  0x0A, 0x28, 0x8C, 0x0F, 0xC3, 0x3E, 0xFE, 0xC0,  // .(...>..
+                /* 03E0 */  0x95, 0x04, 0x87, 0x1A, 0xA3, 0xC7, 0xF9, 0x5C,  // .......\
+                /* 03E8 */  0x7A, 0xAC, 0x4F, 0xFB, 0x1E, 0xED, 0xC1, 0x3D,  // z.O....=
+                /* 03F0 */  0x07, 0x61, 0xFF, 0xFF, 0x47, 0x05, 0x3E, 0xAD,  // .a..G.>.
+                /* 03F8 */  0x93, 0xF2, 0x35, 0xE0, 0x69, 0xC6, 0xF7, 0x00,  // ..5.i...
+                /* 0400 */  0x13, 0xF8, 0xBC, 0xC0, 0xD0, 0xF8, 0xA1, 0x08,  // ........
+                /* 0408 */  0xAC, 0x97, 0x06, 0x1F, 0x15, 0xC0, 0x31, 0xEB,  // ......1.
+                /* 0410 */  0x37, 0x22, 0x0C, 0x56, 0xA8, 0x18, 0x8D, 0x9E,  // 7".V....
+                /* 0418 */  0x04, 0x08, 0xE8, 0xF1, 0xF5, 0x75, 0x1D, 0xA0,  // .....u..
+                /* 0420 */  0x50, 0x6F, 0xC7, 0xBE, 0x14, 0xD8, 0xE5, 0x8D,  // Po......
+                /* 0428 */  0x00, 0x75, 0xFE, 0x01, 0x1B, 0xF6, 0xF3, 0x0F,  // .u......
+                /* 0430 */  0xD8, 0x43, 0x1D, 0xAF, 0x68, 0xA4, 0xD1, 0xA0,  // .C..h...
+                /* 0438 */  0x8E, 0x0A, 0x3E, 0x14, 0xF8, 0x54, 0xEB, 0x3B,  // ..>..T.;
+                /* 0440 */  0xB4, 0x47, 0x12, 0xE4, 0x44, 0x4F, 0xEB, 0x71,  // .G..DO.q
+                /* 0448 */  0xE1, 0x69, 0xC0, 0xE3, 0x66, 0xD7, 0x04, 0x7F,  // .i..f...
+                /* 0450 */  0x10, 0x7C, 0x3C, 0xC0, 0xDF, 0x1F, 0x02, 0x9E,  // .|<.....
+                /* 0458 */  0xE8, 0xD3, 0x07, 0xAC, 0x53, 0x08, 0xFE, 0x94,  // ....S...
+                /* 0460 */  0x01, 0x7F, 0x3C, 0x3E, 0x06, 0x78, 0x3E, 0x27,  // ..<>.x>'
+                /* 0468 */  0xFC, 0x24, 0x46, 0x06, 0x81, 0x3A, 0xAE, 0xF0,  // .$F..:..
+                /* 0470 */  0x91, 0x9E, 0xD6, 0xDB, 0x80, 0x4F, 0x20, 0x26,  // .....O &
+                /* 0478 */  0xF0, 0xFF, 0xFF, 0x70, 0xED, 0x33, 0x0E, 0x38,  // ...p.3.8
+                /* 0480 */  0xC6, 0x03, 0xFF, 0xC0, 0xFC, 0x90, 0xE1, 0x2B,  // .......+
+                /* 0488 */  0x83, 0xE7, 0xEB, 0x73, 0x0E, 0xF6, 0x84, 0x0C,  // ...s....
+                /* 0490 */  0x13, 0x27, 0x7E, 0xA8, 0xA7, 0x0E, 0x83, 0xBC,  // .'~.....
+                /* 0498 */  0x5F, 0xF8, 0x04, 0x02, 0x4C, 0x92, 0x78, 0x39,  // _...L.x9
+                /* 04A0 */  0x92, 0xB3, 0xD4, 0xAF, 0x01, 0xD9, 0x38, 0xE0,  // ......8.
+                /* 04A8 */  0xD3, 0x41, 0x38, 0xED, 0x5A, 0x75, 0xE0, 0x63,  // .A8.Zu.c
+                /* 04B0 */  0x3E, 0x47, 0x27, 0xD5, 0x28, 0x1A, 0xB4, 0x6F,  // >G'.(..o
+                /* 04B8 */  0x51, 0x2C, 0x21, 0x9C, 0xCE, 0x58, 0x1E, 0xB4,  // Q,!..X..
+                /* 04C0 */  0xB3, 0x51, 0x48, 0x1F, 0x8D, 0x06, 0x64, 0x78,  // .QH...dx
+                /* 04C8 */  0x2B, 0x82, 0x11, 0x9C, 0x41, 0x0C, 0xE8, 0xB8,  // +...A...
+                /* 04D0 */  0x87, 0x28, 0xF4, 0xA9, 0xC4, 0x33, 0xA0, 0x10,  // .(...3..
+                /* 04D8 */  0xBA, 0x38, 0x78, 0x2E, 0xBE, 0x04, 0x70, 0x3C,  // .8x...p<
+                /* 04E0 */  0x1F, 0x0B, 0x0C, 0x6B, 0xB5, 0x57, 0x2D, 0x50,  // ...k.W-P
+                /* 04E8 */  0x9D, 0xE0, 0x70, 0xB7, 0x0E, 0x76, 0x04, 0x7A,  // ..p..v.z
+                /* 04F0 */  0xBC, 0x33, 0x6E, 0x8C, 0xA7, 0x1D, 0x76, 0xC2,  // .3n...v.
+                /* 04F8 */  0x31, 0x32, 0xFF, 0xBB, 0xF8, 0x7C, 0xC4, 0x07,  // 12...|..
+                /* 0500 */  0x85, 0x21, 0xB0, 0xAE, 0xFB, 0x01, 0xC4, 0xFF,  // .!......
+                /* 0508 */  0xFF, 0x9D, 0x07, 0x8E, 0xBE, 0xF3, 0x01, 0x28,  // .......(
+                /* 0510 */  0x80, 0x7C, 0x25, 0xB0, 0xD2, 0x63, 0x01, 0x1D,  // .|%..c..
+                /* 0518 */  0x43, 0x88, 0x30, 0xD1, 0x8C, 0xCE, 0xA5, 0xCF,  // C.0.....
+                /* 0520 */  0x1F, 0x25, 0x76, 0xFE, 0x14, 0xC4, 0xF3, 0xB7,  // .%v.....
+                /* 0528 */  0x10, 0x10, 0xD9, 0x98, 0x3F, 0xEA, 0x32, 0xE1,  // ....?.2.
+                /* 0530 */  0x3B, 0x10, 0x27, 0x70, 0xF0, 0x13, 0x00, 0xBD,  // ;.'p....
+                /* 0538 */  0x7B, 0xE0, 0x87, 0xFA, 0xA6, 0xE4, 0x4B, 0x05,  // {.....K.
+                /* 0540 */  0xBB, 0xAD, 0xE0, 0x8E, 0x00, 0x70, 0xEF, 0x0A,  // .....p..
+                /* 0548 */  0x6C, 0xEE, 0x4F, 0x2C, 0x47, 0xFB, 0xB4, 0x70,  // l.O,G..p
+                /* 0550 */  0x62, 0x51, 0x62, 0x9E, 0x41, 0xC4, 0x08, 0xAF,  // bQb.A...
+                /* 0558 */  0x4F, 0x46, 0xF3, 0x95, 0x01, 0x87, 0xF3, 0x38,  // OF.....8
+                /* 0560 */  0xC0, 0x6E, 0x28, 0xC6, 0x7A, 0xCD, 0xE1, 0x43,  // .n(.z..C
+                /* 0568 */  0xF2, 0x35, 0x80, 0xDF, 0xFC, 0x70, 0xA3, 0xF4,  // .5...p..
+                /* 0570 */  0xF5, 0x09, 0x7F, 0x0E, 0xC0, 0xCF, 0xE4, 0x3C,  // .......<
+                /* 0578 */  0x30, 0xEA, 0xC6, 0x22, 0x78, 0x5F, 0x9F, 0xF0,  // 0.."x_..
+                /* 0580 */  0x02, 0x2F, 0x03, 0x20, 0x87, 0xC7, 0xDC, 0xF4,  // ./. ....
+                /* 0588 */  0x7C, 0x43, 0xB3, 0xAC, 0xC1, 0xA1, 0xC6, 0xED,  // |C......
+                /* 0590 */  0x2B, 0x12, 0xC3, 0x3E, 0x65, 0x5F, 0x1F, 0x4E,  // +..>e_.N
+                /* 0598 */  0xEA, 0x21, 0xE2, 0xF5, 0x90, 0xFF, 0xFF, 0x61,  // .!.....a
+                /* 05A0 */  0xD9, 0x49, 0x80, 0xC3, 0x1A, 0x2D, 0xEC, 0x71,  // .I...-.q
+                /* 05A8 */  0x9F, 0xAE, 0xCF, 0x37, 0xBE, 0x35, 0xF8, 0x40,  // ...7.5.@
+                /* 05B0 */  0xE1, 0x8B, 0x0D, 0x58, 0x6E, 0x6B, 0xF0, 0xAF,  // ...Xnk..
+                /* 05B8 */  0x26, 0x4F, 0x07, 0xE0, 0x43, 0xF2, 0xA9, 0xC9,  // &O..C...
+                /* 05C0 */  0xA3, 0x3D, 0xA9, 0x08, 0x41, 0x9E, 0x90, 0x9E,  // .=..A...
+                /* 05C8 */  0x36, 0x7C, 0xC2, 0x61, 0x27, 0x52, 0x76, 0x26,  // 6|.a'Rv&
+                /* 05D0 */  0xE0, 0x22, 0x1E, 0x0F, 0xBA, 0xAA, 0x70, 0x0E,  // ."....p.
+                /* 05D8 */  0xC7, 0xBD, 0xAA, 0x40, 0x3C, 0x1A, 0xF9, 0xF8,  // ...@<...
+                /* 05E0 */  0x66, 0x82, 0xF1, 0x2E, 0x2B, 0xA8, 0x60, 0x14,  // f...+.`.
+                /* 05E8 */  0x92, 0x76, 0xBA, 0x40, 0x89, 0x39, 0x5D, 0x50,  // .v.@.9]P
+                /* 05F0 */  0x10, 0x03, 0x3A, 0xE9, 0x65, 0x05, 0xE2, 0x69,  // ..:.e..i
+                /* 05F8 */  0xD6, 0x97, 0x15, 0xB8, 0xB7, 0x83, 0x97, 0x15,  // ........
+                /* 0600 */  0x70, 0x5F, 0xCA, 0xD8, 0x51, 0x85, 0xCD, 0xEE,  // p_..Q...
+                /* 0608 */  0xD9, 0xC9, 0x47, 0x15, 0xE0, 0xF2, 0xFF, 0x3F,  // ..G....?
+                /* 0610 */  0xAA, 0x00, 0x03, 0xF1, 0xA3, 0x47, 0xC9, 0x1D,  // .....G..
+                /* 0618 */  0x3D, 0x05, 0xF1, 0xE8, 0x2D, 0xE5, 0xA8, 0x02,  // =...-...
+                /* 0620 */  0x3D, 0xFA, 0x51, 0x05, 0x50, 0x75, 0xAD, 0xC2,  // =.Q.Pu..
+                /* 0628 */  0x1D, 0x55, 0xC0, 0x70, 0x92, 0xE0, 0x57, 0x15,  // .U.p..W.
+                /* 0630 */  0xFC, 0x59, 0x05, 0x98, 0x1C, 0x2B, 0x7C, 0x56,  // .Y...+|V
+                /* 0638 */  0x01, 0xD7, 0xA1, 0xC0, 0x67, 0x15, 0x18, 0xFF,  // ....g...
+                /* 0640 */  0xFF, 0xB3, 0x0A, 0x30, 0xBB, 0x31, 0x3E, 0x1E,  // ...0.1>.
+                /* 0648 */  0x80, 0xED, 0x5A, 0xE1, 0xC9, 0xFB, 0x10, 0xCE,  // ..Z.....
+                /* 0650 */  0x0E, 0xB3, 0xBE, 0xAB, 0xC0, 0xB9, 0x8C, 0xB3,  // ........
+                /* 0658 */  0x29, 0x9F, 0xC0, 0xAB, 0x80, 0x2F, 0x1D, 0x86,  // )..../..
+                /* 0660 */  0x78, 0xF7, 0x60, 0x67, 0x03, 0x1F, 0x38, 0x1C,  // x.`g..8.
+                /* 0668 */  0xE6, 0xB2, 0x86, 0xBA, 0x66, 0x3A, 0xD2, 0x91,  // ....f:..
+                /* 0670 */  0x05, 0x71, 0x7A, 0xC4, 0x11, 0x0C, 0x72, 0x5E,  // .qz...r^
+                /* 0678 */  0x41, 0x45, 0x38, 0xAF, 0x00, 0xE2, 0xFF, 0xFF,  // AE8.....
+                /* 0680 */  0xE7, 0x15, 0xB0, 0xCB, 0x1C, 0x3D, 0x4A, 0xD8,  // .....=J.
+                /* 0688 */  0xE8, 0x29, 0x88, 0x47, 0xEF, 0xD0, 0x10, 0x3A,  // .).G...:
+                /* 0690 */  0xAF, 0xC0, 0x0D, 0x79, 0x5E, 0x01, 0xC5, 0xC5,  // ...y^...
+                /* 0698 */  0x1B, 0x3C, 0xB7, 0x51, 0x76, 0x60, 0x36, 0xCA,  // .<.Qv`6.
+                /* 06A0 */  0x23, 0x0A, 0xFC, 0x4B, 0x01, 0xEE, 0x88, 0x02,  // #..K....
+                /* 06A8 */  0x86, 0xEB, 0x03, 0xFE, 0x90, 0x02, 0xCC, 0x02,  // ........
+                /* 06B0 */  0x9F, 0xCF, 0x40, 0x07, 0xE9, 0x43, 0x0A, 0x30,  // ..@..C.0
+                /* 06B8 */  0xF8, 0xFF, 0x1F, 0x52, 0xC0, 0x34, 0x54, 0xDC,  // ...R.4T.
+                /* 06C0 */  0x21, 0x05, 0x1C, 0x17, 0xD9, 0xA3, 0xE7, 0xD7,  // !.......
+                /* 06C8 */  0x0A, 0x1F, 0x49, 0x74, 0x2C, 0x41, 0x1F, 0xC6,  // ..It,A..
+                /* 06D0 */  0x7C, 0x09, 0xC7, 0x13, 0x38, 0xCE, 0xB1, 0x04,  // |...8...
+                /* 06D8 */  0x75, 0x32, 0xF1, 0x19, 0xCA, 0x27, 0x09, 0x2E,  // u2...'..
+                /* 06E0 */  0xF0, 0x24, 0x41, 0x41, 0x0C, 0xE8, 0xF4, 0x27,  // .$AA...'
+                /* 06E8 */  0x09, 0xB4, 0x8E, 0x1B, 0x31, 0x3D, 0x4A, 0x60,  // ....1=J`
+                /* 06F0 */  0xC2, 0x1E, 0x4C, 0x00, 0x11, 0x17, 0xDC, 0xC7,  // ..L.....
+                /* 06F8 */  0x09, 0x70, 0x9D, 0xE5, 0xE1, 0x1F, 0x50, 0x80,  // .p....P.
+                /* 0700 */  0xC5, 0xD9, 0xE4, 0xFF, 0xFF, 0x1C, 0x80, 0x39,  // .......9
+                /* 0708 */  0x9B, 0xF9, 0x1C, 0x60, 0x10, 0x9F, 0x03, 0x1C,  // ...`....
+                /* 0710 */  0xF3, 0xB4, 0x83, 0x9E, 0x89, 0x8F, 0x22, 0xF8,  // ......".
+                /* 0718 */  0x50, 0x27, 0x14, 0xA0, 0x7D, 0xA7, 0x86, 0x7F,  // P'..}...
+                /* 0720 */  0xD6, 0xC1, 0x9E, 0x4C, 0x80, 0xF9, 0xB8, 0x7D,  // ...L...}
+                /* 0728 */  0x32, 0x01, 0x9C, 0xDC, 0x23, 0xD8, 0xC9, 0xC4,  // 2...#...
+                /* 0730 */  0xFF, 0xFF, 0x93, 0x09, 0x36, 0xD8, 0xC9, 0x04,  // ....6...
+                /* 0738 */  0x35, 0x74, 0x9F, 0x4C, 0x30, 0x13, 0x3D, 0x86,  // 5t.L0.=.
+                /* 0740 */  0x93, 0x4E, 0xE0, 0x40, 0x07, 0x13, 0x54, 0x14,  // .N.@..T.
+                /* 0748 */  0x0A, 0x09, 0x3E, 0x41, 0xA0, 0x24, 0x9E, 0x20,  // ..>A.$. 
+                /* 0750 */  0x28, 0x88, 0x01, 0x9D, 0xFF, 0x60, 0x82, 0x56,  // (....`.V
+                /* 0758 */  0x71, 0x62, 0x42, 0xDE, 0x01, 0x7C, 0x2E, 0x81,  // qbB..|..
+                /* 0760 */  0x7B, 0xAE, 0xF7, 0x1C, 0xC1, 0x31, 0xAE, 0xC7,  // {....1..
+                /* 0768 */  0x07, 0x9F, 0xBA, 0x8D, 0x18, 0xE9, 0xC1, 0xE3,  // ........
+                /* 0770 */  0xBD, 0xC4, 0x70, 0xEF, 0x01, 0x46, 0x0D, 0xF3,  // ..p..F..
+                /* 0778 */  0x50, 0xEF, 0xCB, 0x89, 0xAD, 0x82, 0x68, 0xEC,  // P.....h.
+                /* 0780 */  0x3E, 0x99, 0x00, 0x7E, 0xE1, 0x9F, 0x4C, 0xC0,  // >..~..L.
+                /* 0788 */  0xF5, 0xFF, 0x3F, 0x99, 0x00, 0x46, 0x63, 0x9F,  // ..?..Fc.
+                /* 0790 */  0x4C, 0x40, 0x07, 0xCB, 0x4F, 0x26, 0xC0, 0x73,  // L@..O&.s
+                /* 0798 */  0x8E, 0x4F, 0x26, 0x60, 0xBB, 0x8E, 0xB0, 0x33,  // .O&`...3
+                /* 07A0 */  0x27, 0x8C, 0xC3, 0x09, 0xEC, 0x9B, 0xB6, 0x0F,  // '.......
+                /* 07A8 */  0xBB, 0x0F, 0x27, 0x70, 0xCE, 0x25, 0x3E, 0x44,  // ..'p.%>D
+                /* 07B0 */  0x70, 0x51, 0x06, 0xFE, 0xFF, 0x70, 0x0C, 0xC4,  // pQ...p..
+                /* 07B8 */  0x80, 0x4E, 0x7C, 0x88, 0x40, 0x1F, 0xC2, 0xF8,  // .N|.@...
+                /* 07C0 */  0x1C, 0xDE, 0x16, 0x0C, 0x91, 0x60, 0xC0, 0xD3,  // .....`..
+                /* 07C8 */  0x09, 0x20, 0xE4, 0xB8, 0x09, 0xB0, 0xE7, 0xFF,  // . ......
+                /* 07D0 */  0x7F, 0xDC, 0x04, 0x0C, 0x1C, 0x4E, 0xC0, 0x77,  // .....N.w
+                /* 07D8 */  0x5F, 0xF0, 0xE1, 0x04, 0x70, 0x73, 0x1D, 0x61,  // _...ps.a
+                /* 07E0 */  0x87, 0x13, 0x58, 0xF1, 0x87, 0x40, 0xCF, 0x0D,  // ..X..@..
+                /* 07E8 */  0xFC, 0xC8, 0xE9, 0xC3, 0x3D, 0x07, 0x39, 0xEE,  // ....=.9.
+                /* 07F0 */  0x08, 0x6F, 0x06, 0x26, 0x18, 0x75, 0xD4, 0xA0,  // .o.&.u..
+                /* 07F8 */  0xF3, 0x30, 0x6A, 0x10, 0xFF, 0xFF, 0x47, 0x0D,  // .0j...G.
+                /* 0800 */  0x56, 0x69, 0xA3, 0x06, 0xCD, 0x28, 0x83, 0x45,  // Vi...(.E
+                /* 0808 */  0x88, 0x94, 0xC0, 0x0A, 0x6D, 0xFA, 0xD4, 0x68,  // ....m..h
+                /* 0810 */  0xD4, 0xAA, 0x41, 0x99, 0x1A, 0x65, 0x1A, 0xD4,  // ..A..e..
+                /* 0818 */  0xEA, 0x53, 0xA9, 0x31, 0x63, 0x96, 0xA0, 0x14,  // .S.1c...
+                /* 0820 */  0x62, 0x9D, 0x1A, 0xA8, 0x63, 0x3D, 0x3A, 0x04,  // b...c=:.
+                /* 0828 */  0xE2, 0x98, 0xAB, 0x15, 0x88, 0xC5, 0x9A, 0x00,  // ........
+                /* 0830 */  0x61, 0x92, 0x1F, 0x6F, 0x02, 0x71, 0x84, 0x47,  // a..o.q.G
+                /* 0838 */  0x88, 0x40, 0x1C, 0xEA, 0x51, 0x23, 0x10, 0x07,  // .@..Q#..
+                /* 0840 */  0xF2, 0x01, 0xC2, 0xC2, 0x29, 0x01, 0x61, 0xD1,  // ....).a.
+                /* 0848 */  0x5E, 0x37, 0x02, 0x71, 0xD8, 0x47, 0x80, 0x06,  // ^7.q.G..
+                /* 0850 */  0x41, 0xBC, 0x80, 0x30, 0x51, 0xEB, 0xD2, 0x30,  // A..0Q..0
+                /* 0858 */  0x88, 0x19, 0x88, 0x46, 0x40, 0x94, 0x19, 0x44,  // ...F@..D
+                /* 0860 */  0x40, 0xD6, 0xE4, 0x06, 0x88, 0x29, 0x04, 0xD1,  // @....)..
+                /* 0868 */  0x00, 0x88, 0x1D, 0x20, 0x96, 0x13, 0x44, 0x40,  // ... ..D@
+                /* 0870 */  0xD6, 0xE1, 0x07, 0x88, 0xA9, 0x02, 0x11, 0x90,  // ........
+                /* 0878 */  0x83, 0x19, 0x02, 0x62, 0x29, 0x41, 0x04, 0xE4,  // ...b)A..
+                /* 0880 */  0xAC, 0x8A, 0x80, 0x58, 0x72, 0x10, 0x01, 0x59,  // ...Xr..Y
+                /* 0888 */  0xE8, 0x1A, 0x05, 0x64, 0xD5, 0x20, 0x02, 0x72,  // ...d. .r
+                /* 0890 */  0x1A, 0x4D, 0x40, 0x2C, 0x1B, 0x88, 0x80, 0x1C,  // .M@,....
+                /* 0898 */  0x5D, 0x14, 0x10, 0xD3, 0x61, 0x0A, 0x88, 0xE9,  // ]...a...
+                /* 08A0 */  0x53, 0x05, 0xC4, 0xD4, 0x82, 0x68, 0x98, 0xE4,  // S....h..
+                /* 08A8 */  0x7D, 0x20, 0x20, 0x27, 0x04, 0x11, 0x90, 0x73,  // }  '...s
+                /* 08B0 */  0xDA, 0x02, 0x62, 0xA9, 0x41, 0x04, 0xE4, 0xFF,  // ..b.A...
+                /* 08B8 */  0x3F                                             // ?
+            })
+            Name (_HID, EisaId ("PNP0C14") /* Windows Management Instrumentation Device */)  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (_WDG, Buffer (0x28)
+            {
+                /* 0000 */  0x6A, 0x0F, 0xBC, 0xAB, 0xA1, 0x8E, 0xD1, 0x11,  // j.......
+                /* 0008 */  0x00, 0xA0, 0xC9, 0x06, 0x29, 0x10, 0x00, 0x00,  // ....)...
+                /* 0010 */  0x41, 0x41, 0x01, 0x02, 0x21, 0x12, 0x90, 0x05,  // AA..!...
+                /* 0018 */  0x66, 0xD5, 0xD1, 0x11, 0xB2, 0xF0, 0x00, 0xA0,  // f.......
+                /* 0020 */  0xC9, 0x06, 0x29, 0x10, 0x42, 0x41, 0x01, 0x00   // ..).BA..
+            })
+            Method (WMAA, 3, NotSerialized)
+            {
+                If ((Arg0 == Zero))
+                {
+                    If ((Arg1 != 0x07))
+                    {
+                        CreateDWordField (Arg2, Zero, WIID)
+                    }
+
+                    If (((Arg1 == 0x04) | ((Arg1 == 0x05) | (Arg1 == 0x08)
+                        )))
+                    {
+                        CreateDWordField (Arg2, 0x04, WIV1)
+                        CreateDWordField (Arg2, 0x08, WIV2)
+                    }
+
+                    If ((Arg1 == One))
+                    {
+                        Return (IM01 (WIID))
+                    }
+                    ElseIf ((Arg1 == 0x02))
+                    {
+                        Return (IM02 (WIID))
+                    }
+                    ElseIf ((Arg1 == 0x03))
+                    {
+                        Return (IM03 (WIID))
+                    }
+                    ElseIf ((Arg1 == 0x04))
+                    {
+                        Return (IM04 (WIID, WIV1, WIV2))
+                    }
+                    ElseIf ((Arg1 == 0x05))
+                    {
+                        Return (IM05 (WIID, WIV1, WIV2))
+                    }
+                    ElseIf ((Arg1 == 0x06))
+                    {
+                        Return (IM06 (WIID))
+                    }
+                    ElseIf ((Arg1 == 0x07))
+                    {
+                        IM07 ()
+                    }
+                }
+            }
+        }
+    }

@@ -1,0 +1,39 @@
+WMI Device Guid: "ABBC0F6A-8EA1-11D1-00A0-C90629100000"
+Method 
+
+       \_SB.ISM.IB2U Method       0x556781f0ca40 001 Args 0 Len 0017 Aml 0x7f9a5a775d0f
+       \_SB.ISM.IBFU Method       0x556781f0cbb0 001 Args 0 Len 0024 Aml 0x7f9a5a775d2d
+       \_SB.ISM.IBFR Method       0x556781f0cca0 001 Args 0 Len 0026 Aml 0x7f9a5a775d58
+       \_SB.ISM.IB2R Method       0x556781f0cd90 001 Args 0 Len 0019 Aml 0x7f9a5a775d85
+       \_SB.ISM.GTEC Method       0x556781f0ce80 001 Args 3 Len 0053 Aml 0x7f9a5a775da6
+-->    \_SB.ISM.STEC Method       0x556781f0cf70 001 Args 4 Len 004E Aml 0x7f9a5a775e01  // SET DIO State (low-level) (called from SDIO)
+       \_SB.ISM.GTE2 Method       0x556781f0d060 001 Args 3 Len 004D Aml 0x7f9a5a775e57
+       \_SB.ISM.STE2 Method       0x556781f0d150 001 Args 4 Len 004E Aml 0x7f9a5a775eac
+       \_SB.ISM.GTMP Method       0x556781f0d420 001 Args 2 Len 0087 Aml 0x7f9a5a775f10
+       \_SB.ISM.GTHW Method       0x556781f0d510 001 Args 1 Len 0000 Aml 0x7f9a5a775f9e
+       \_SB.ISM.CNTF Method       0x556781f0d600 001 Args 1 Len 0021 Aml 0x7f9a5a775fa5
+       \_SB.ISM.GFAN Method       0x556781f0d6f0 001 Args 2 Len 010C Aml 0x7f9a5a775fce
+       \_SB.ISM.GSFN Method       0x556781f0d7e0 001 Args 2 Len 02B5 Aml 0x7f9a5a7760e2
+       \_SB.ISM.SSFN Method       0x556781f0d8d0 001 Args 3 Len 01B1 Aml 0x7f9a5a77639f
+       \_SB.ISM.CNTV Method       0x556781f0d9c0 001 Args 3 Len 0010 Aml 0x7f9a5a776557
+       \_SB.ISM.GVOT Method       0x556781f0dab0 001 Args 2 Len 0138 Aml 0x7f9a5a77656f
+       \_SB.ISM.WDT Method       0x556781f0dba0 001 Args 3 Len 007F Aml 0x7f9a5a7766af   // Watch Dog ? 
+-->    \_SB.ISM.GDIO Method       0x556781f0dc90 001 Args 1 Len 0083 Aml 0x7f9a5a776736  //GET DIO 
+-->    \_SB.ISM.SDIO Method       0x556781f0dd80 001 Args 1 Len 003C Aml 0x7f9a5a7767c1  //Set DIO (calls SETC)
+       \_SB.ISM.BEEP Method       0x556781f0de70 001 Args 0 Len 0047 Aml 0x7f9a5a776805
+       \_SB.ISM.SETV Method       0x556781f0df60 001 Args 1 Len 0000 Aml 0x7f9a5a776853
+       \_SB.ISM.SOID Method       0x556781f12000 001 Args 1 Len 0017 Aml 0x7f9a5a776a67
+       \_SB.ISM.WROW Method       0x556781f12170 001 Args 4 Len 00A9 Aml 0x7f9a5a776a86
+       \_SB.ISM.GROW Method       0x556781f12260 001 Args 4 Len 00AF Aml 0x7f9a5a776b37
+       \_SB.ISM.CPTB Method       0x556781f12350 001 Args 2 Len 0103 Aml 0x7f9a5a776bee
+       \_SB.ISM.CBTP Method       0x556781f12440 001 Args 1 Len 00D6 Aml 0x7f9a5a776cf9
+        \_SB.ISM.ABS Method       0x556781f12530 001 Args 2 Len 0011 Aml 0x7f9a5a776dd6
+       \_SB.ISM.IM01 Method       0x556781f12b40 001 Args 1 Len 0052 Aml 0x7f9a5a776e3b
+       \_SB.ISM.IM02 Method       0x556781f12c30 001 Args 1 Len 008E Aml 0x7f9a5a776e95
+       \_SB.ISM.IM03 Method       0x556781f17200 001 Args 1 Len 00B6 Aml 0x7f9a5a776f2b
+       \_SB.ISM.IM04 Method       0x556781f172f0 001 Args 3 Len 0053 Aml 0x7f9a5a776fe9
+       \_SB.ISM.IM05 Method       0x556781f173e0 001 Args 3 Len 0008 Aml 0x7f9a5a777043
+-->    \_SB.ISM.IM06 Method       0x556781f174d0 001 Args 1 Len 005B Aml 0x7f9a5a777053   //probably SetDIOWMI in windows: set the DIO value and return the status
+       \_SB.ISM.IM07 Method       0x556781f175c0 001 Args 0 Len 0004 Aml 0x7f9a5a7770b5
+       \_SB.ISM.WMAA Method       0x556781f183d0 001 Args 3 Len 00B8 Aml 0x7f9a5a7779c6
+       
