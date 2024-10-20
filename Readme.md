@@ -1,4 +1,4 @@
-# Wafer-JL GPIO
+# Wafer-JL GPIO on Linux
 
 This project is focused on implementing GPIO control for the Wafer-JL board. It includes data for analysis and code examples to support the development of GPIO management through various methods, such as low-level interactions via ACPI methods.
 
