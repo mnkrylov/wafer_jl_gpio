@@ -12,11 +12,14 @@ The implementation of GPIO control is still in progress. The project contains co
 - **acpi_methods.txt**: Contains the ACPI methods relevant to the Wafer-JL board, including GPIO methods such as `STEC` (Set DIO State) and `SDIO` (Set DIO).
 - **guesses.txt**: Contains guessed WMI device GUIDs and associated methods for GPIO control.
 - **iasl_data.txt**: Data dump from `iasl`, useful for debugging and understanding ACPI tables.
-- **wafer_jl_STEC.c**: C source code that demonstrates GPIO management using ACPI methods.
+
+## Available now
+- **STEC**  manualy SET DIO State (called from SDIO) with some extra parameters
+- **SDIO** SET DIO State
 
 ## How to Build
 
-1. Navigate to the `examples/acpi/tests/STEC` directory.
+1. Navigate to the `examples/acpi/tests/<project>` directory.
 2. Run `make` to build the example code.
 3. Execute `test.sh` to test GPIO functionality.
 

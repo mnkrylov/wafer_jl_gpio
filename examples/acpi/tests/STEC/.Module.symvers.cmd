@@ -1,0 +1,1 @@
+cmd_/home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/Module.symvers :=  sed 's/ko$$/o/'  /home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/modules.order | scripts/mod/modpost -m      -o /home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/Module.symvers -e -i Module.symvers -T - 

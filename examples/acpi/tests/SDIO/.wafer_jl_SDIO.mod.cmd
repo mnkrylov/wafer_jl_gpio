@@ -1,0 +1,1 @@
+cmd_/home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/SDIO/wafer_jl_SDIO.mod := printf '%s\n'   wafer_jl_SDIO.o | awk '!x[$$0]++ { print("/home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/SDIO/"$$0) }' > /home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/SDIO/wafer_jl_SDIO.mod

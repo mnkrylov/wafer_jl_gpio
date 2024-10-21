@@ -1,0 +1,1 @@
+cmd_/home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/modules.order := {   echo /home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/wafer_jl_STEC.ko; :; } > /home/user/driver_tests/wafer_jl_gpio/examples/acpi/tests/STEC/modules.order
