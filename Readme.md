@@ -15,7 +15,17 @@ The implementation of GPIO control is still in progress. The project contains co
 
 ## Available now
 - **STEC**  manualy SET DIO State (called from SDIO) with some extra parameters
-- **SDIO** SET DIO State
+- **SDIO** 
+
+## SDIO values
+| DIO Output | Bit Position | Hex Value  | Full Command Value  |
+|------------|--------------|------------|---------------------|
+| DIO0       | 0            | 0x00000001 | 0x1000001           |
+| DIO1       | 1            | 0x00000002 | 0x1000002           |
+| DIO2       | 2            | 0x00000004 | 0x1000004           |
+| DIO3       | 3            | 0x00000008 | 0x1000008           |
+| DIO4       | 4            | 0x00000010 | 0x1000010           |
+| DIO5       | 5            | 0x00000020 | 0x1000020           |
 
 ## How to Build
 

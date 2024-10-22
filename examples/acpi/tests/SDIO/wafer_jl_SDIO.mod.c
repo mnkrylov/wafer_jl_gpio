@@ -33,9 +33,9 @@ __used __section("__versions") = {
 	{ 0xbdfb6dbb, "__fentry__" },
 	{ 0xd92deb6b, "acpi_evaluate_object" },
 	{ 0x37a0cba, "kfree" },
-	{ 0xf9a482f9, "msleep" },
 	{ 0xd0da656b, "__stack_chk_fail" },
 	{ 0x5b8239ca, "__x86_return_thunk" },
+	{ 0xf9a482f9, "msleep" },
 	{ 0xc2855f40, "module_layout" },
 };
 

@@ -1,9 +1,3 @@
-/*
- *
- * LED-Blink (ko)
- */
-
-
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -42,26 +36,107 @@ static acpi_status call_acpi_sdio_method(unsigned int arg1)
     return status;
 }
 
+static acpi_status carusel1(void){
+    //from DIO0 to DIO5;
+    /*
+     (1 << 24) | (1 << 0) DIO0 HIGH 
+     (1 << 24) | (1 << 1) DIO1 HIGH
+     ...
+     (1 << 24) | (1 << 5) DIO5 HIGH
+    */
+    unsigned int  j;
+    acpi_status status;
+    for (j = 0; j < 6; j++) {
+        status = call_acpi_sdio_method( (1 << 24) | (1 << j));
+        if (ACPI_FAILURE(status)) {
+            pr_err("Failed first SDIO ACPI call on cycle %d of carusel1\n", j);
+        }
+        msleep(500);
+    }
+    return status;
+}
+
+static acpi_status ladder(void){
+    //set HIGH from DIO0 to DIO5 with holding of the previous state;
+    /*
+     (1 << 24) | (1 << 0) | (1 << 1) DIO0 HIGH && DIO1 HIGH
+     ...
+     (1 << 24) | (1 << 0) | (1 << 1) | ... | (1 << 4) | (1 << 5) DIO0 to DIO5 HIGH
+    */
+    unsigned int j, state;
+    acpi_status status;
+    state = 1<<24; 
+    for (j = 0; j < 6; j++) {
+        state |= (1<<j);
+        status = call_acpi_sdio_method( state);
+        if (ACPI_FAILURE(status)) {
+            pr_err("Failed first SDIO ACPI call on cycle %d of ladder \n ", j);
+        }
+        msleep(500);
+    }
+    return status;
+}
+
+static acpi_status reversed_ladder(void){
+    //set LOW from DIO5 to DIO0 with holding of the previous state;
+    /*
+     (1 << 24) | (1 << 0) | (1 << 1) DIO0 HIGH && DIO1 HIGH
+     ...
+     (1 << 24) | (1 << 0) | (1 << 1) | ... | (1 << 4) | (1 << 5) DIO0 to DIO5 HIGH
+    */
+    unsigned int j, state;
+    acpi_status status;
+    state = 0x100003F; // ALL HIGH 
+    for (j = 0; j < 6; j++) {
+        state &= ~(1<<j);
+        status = call_acpi_sdio_method( state);
+        if (ACPI_FAILURE(status)) {
+            pr_err("Failed first SDIO ACPI call on cycle %d of R. Ladder\n ", j);
+        }
+        msleep(500);
+    }
+    return status;
+}
+
+
+static acpi_status blink_all(void){
+    //set LOW from DIO5 to DIO0 with holding of the previous state;
+    /*
+     (1 << 24) | (1 << 0) | (1 << 1) DIO0 HIGH && DIO1 HIGH
+     ...
+     (1 << 24) | (1 << 0) | (1 << 1) | ... | (1 << 4) | (1 << 5) DIO0 to DIO5 HIGH
+    */
+    unsigned int  j, state;
+    acpi_status status;
+    for (j = 0; j < 6; j++) {
+        status = call_acpi_sdio_method( 0x1000000); //All LOW
+        if (ACPI_FAILURE(status)) {
+            pr_err("Failed first SDIO ACPI call on cycle %d of blink_all step 1\n ", j);
+        }
+        msleep(1000);
+        status = call_acpi_sdio_method( 0x100003F);  //All HIGH
+        msleep(1000);
+        if (ACPI_FAILURE(status)) {
+              pr_err("Failed first SDIO ACPI call on cycle %d of blink_all step 2\n ", j);
+        }
+        msleep(500);
+    }
+    return status;
+}
+
+
 static int __init acpi_method_caller_init(void)
 {
-    int i, j;
+    unsigned int i;
     acpi_status status;
-
-    // Array of values for the method call
-    unsigned int arg_values[] = {  0x1000000, 0x1FFFFFF };
-
     // Loop to call the method 5 times
-    for (i = 0; i < 5; i++) {
-        for (j = 0; j < 2; j++) {
-           // status = call_acpi_sdio_method(0);
-            status = call_acpi_sdio_method(arg_values[j]);
-            if (ACPI_FAILURE(status)) {
-                pr_err("Failed first SDIO ACPI call on cycle %d\n", i);
-            }
+    for (i = 0; i < 2; i++) {
+        carusel1();
+        ladder();
+        reversed_ladder();
+        blink_all();
 
-            // Pause for 1 second
-            msleep(1000);
-        }
+        status = call_acpi_sdio_method( 0x1000000); //All LOW
     }
 
     return 0;
