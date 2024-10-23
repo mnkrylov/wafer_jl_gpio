@@ -17,6 +17,29 @@ The implementation of GPIO control is still in progress. The project contains co
 - **STEC**: Manually set the DIO state (called from SDIO) with additional parameters.
 - **SDIO**: Interface for setting DIO values.
 
+
+## ACPI Methods
+
+The full name of an ACPI method may depend on the version of the BIOS. For example, it was found that:
+
+```c
+#define ACPI_METHOD_NAME "\\_SB.ISM.SDIO" // for BIOS version 1.3
+// or
+#define ACPI_METHOD_NAME "\\ISM.SDIO"     // for BIOS version 1.4
+```
+### Important:
+
+It is crucial to specify the correct `ACPI_METHOD_NAME` in the `.c` file of the kernel module to ensure proper GPIO control. Incorrect method names can result in failure to communicate with the GPIO hardware. Make sure to update the method name in your source code based on the BIOS version detected, like so:
+
+
+To check the current ACPI method name (for example, for the `SDIO` method), you can use the `acpiexec` tool from the `acpica-tools` package. Run the following command to search for the `SDIO` method in the DSDT table:
+
+```
+acpiexec -b Method -l /sys/firmware/acpi/tables/DSDT | grep SDIO
+```
+
+
+
 ## SDIO values
 
 | DIO Output | Bit Position | Hex Value  | Full Command Value  |
