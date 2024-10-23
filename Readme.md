@@ -34,21 +34,21 @@ The `wafer_jl_gpio` kernel module, located in the `kernel_module_gpio` directory
 
 To turn off all DIOs:
 
-\\\```
+```
 echo 0x1000000 > /dev/gpio_wafer
-\\\```
+```
 
 To control specific DIO outputs, refer to the SDIO values in the table above and use corresponding hex values. For instance, to turn on DIO0:
 
-\\\```
+```
 echo 0x1000001 > /dev/gpio_wafer
-\\\```
+```
 
 Or to turn on DIO1:
 
-\\\```
+```
 echo 0x1000002 > /dev/gpio_wafer
-\\\```
+```
 
 ## How to Build
 
