@@ -5,15 +5,17 @@
 #include <linux/fs.h>
 #include <linux/device.h>
 #include <linux/uaccess.h>
-#include <linux/cdev.h>  // Для работы с cdev
+#include <linux/cdev.h>
+#include <linux/wmi.h>  // For working with WMI
 
 #define ACPI_METHOD_NAME "\\_SB.ISM.SDIO"  // ACPI method name
-#define DEVICE_NAME "gpio_wafer"  // Имя устройства
-#define CLASS_NAME "gpio_class"   // Имя класса устройства
+#define DEVICE_NAME "gpio_wafer"  // Device name
+#define CLASS_NAME "gpio_class"   // Class name for the device
+#define WMI_DEVICE_GUID "ABBC0F6A-8EA1-11D1-00A0-C90629100000"  // WMI device GUID
 
-static dev_t dev_number;           // Мажорный и минорный номер устройства
-static struct class *gpio_class;   // Указатель на класс устройства
-static struct cdev gpio_cdev;      // Структура символьного устройства
+static dev_t dev_number;           // Major and minor device number
+static struct class *gpio_class;   // Pointer to device class
+static struct cdev gpio_cdev;      // Character device structure
 
 // Function to invoke the SDIO ACPI method
 static acpi_status call_acpi_sdio_method(unsigned int arg1)
@@ -28,11 +30,11 @@ static acpi_status call_acpi_sdio_method(unsigned int arg1)
     args[0].type = ACPI_TYPE_INTEGER;
     args[0].integer.value = arg1;
 
-    // Calling the ACPI method
+    // Call the ACPI method
     status = acpi_evaluate_object(NULL, ACPI_METHOD_NAME, &arg_list, &result);
     if (ACPI_FAILURE(status)) {
         pr_err("Failed to call SDIO ACPI method %s with arg 0x%x\n", ACPI_METHOD_NAME, arg1);
-    } 
+    }
 
     // Free the result buffer if the method returned data
     if (result.pointer) {
@@ -43,7 +45,7 @@ static acpi_status call_acpi_sdio_method(unsigned int arg1)
     return status;
 }
 
-// Функция записи в устройство
+// Write function for the device
 static ssize_t gpio_wafer_write(struct file *file, const char __user *buffer, size_t len, loff_t *offset)
 {
     unsigned int arg1;
@@ -52,23 +54,23 @@ static ssize_t gpio_wafer_write(struct file *file, const char __user *buffer, si
     if (len > sizeof(buf) - 1)
         return -EINVAL;
 
-    // Копируем данные из пользовательского пространства
+    // Copy data from user space
     if (copy_from_user(buf, buffer, len))
         return -EFAULT;
     
     buf[len] = '\0';  // Null-terminate the string
 
-    // Преобразуем строку в число
+    // Convert the string to an integer
     if (kstrtouint(buf, 0, &arg1))
         return -EINVAL;
 
-    // Вызываем метод ACPI с переданным аргументом
+    // Invoke the ACPI method with the provided argument
     call_acpi_sdio_method(arg1);
 
     return len;
 }
 
-// Операции для символьного устройства
+// File operations for the character device
 static struct file_operations fops = {
     .owner = THIS_MODULE,
     .write = gpio_wafer_write,
@@ -79,14 +81,20 @@ static int __init gpio_wafer_init(void)
 {
     int ret;
 
-    // Шаг 1: Зарегистрировать символьное устройство
+    // Check if the WMI device with the given GUID is present
+    if (!wmi_has_guid(WMI_DEVICE_GUID)) {
+        pr_err("WMI device with GUID %s not found\n", WMI_DEVICE_GUID);
+        return -ENODEV;  // Device not found, return an error
+    }
+
+    // Step 1: Register the character device
     ret = alloc_chrdev_region(&dev_number, 0, 1, DEVICE_NAME);
     if (ret < 0) {
         pr_err("Failed to allocate char device region\n");
         return ret;
     }
 
-    // Шаг 2: Инициализация символьного устройства
+    // Step 2: Initialize the character device
     cdev_init(&gpio_cdev, &fops);
     gpio_cdev.owner = THIS_MODULE;
     ret = cdev_add(&gpio_cdev, dev_number, 1);
@@ -96,7 +104,7 @@ static int __init gpio_wafer_init(void)
         return ret;
     }
 
-    // Шаг 3: Создать класс устройства
+    // Step 3: Create the device class
     gpio_class = class_create(THIS_MODULE, CLASS_NAME);
     if (IS_ERR(gpio_class)) {
         pr_err("Failed to create class\n");
@@ -105,7 +113,7 @@ static int __init gpio_wafer_init(void)
         return PTR_ERR(gpio_class);
     }
 
-    // Шаг 4: Создать файл устройства в /dev
+    // Step 4: Create the device file in /dev
     device_create(gpio_class, NULL, dev_number, NULL, DEVICE_NAME);
     pr_info("/dev/%s device created\n", DEVICE_NAME);
 
@@ -115,16 +123,16 @@ static int __init gpio_wafer_init(void)
 // Exit function to clean up
 static void __exit gpio_wafer_exit(void)
 {
-    // Удалить файл устройства
+    // Remove the device file
     device_destroy(gpio_class, dev_number);
 
-    // Удалить класс устройства
+    // Destroy the device class
     class_destroy(gpio_class);
 
-    // Удалить символьное устройство
+    // Remove the character device
     cdev_del(&gpio_cdev);
 
-    // Освободить область устройства
+    // Free the device number
     unregister_chrdev_region(dev_number, 1);
 
     pr_info("/dev/%s device removed\n", DEVICE_NAME);
@@ -135,4 +143,4 @@ module_exit(gpio_wafer_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Krylov MN");
-MODULE_DESCRIPTION("ACPI method caller for \\_SB.ISM.SDIO through /dev/gpio_wafer");
+MODULE_DESCRIPTION("ACPI method caller for \\_SB.ISM.SDIO through /dev/gpio_wafer with WMI device check");

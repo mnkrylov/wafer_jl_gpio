@@ -1107,6 +1107,8 @@ deps_/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.o :=
   /usr/src/linux-headers-6.1.0-26-common/include/uapi/linux/quota.h \
   /usr/src/linux-headers-6.1.0-26-common/include/linux/nfs_fs_i.h \
   /usr/src/linux-headers-6.1.0-26-common/include/linux/cdev.h \
+  /usr/src/linux-headers-6.1.0-26-common/include/linux/wmi.h \
+  /usr/src/linux-headers-6.1.0-26-common/include/uapi/linux/wmi.h \
 
 /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.o: $(deps_/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.o)
 

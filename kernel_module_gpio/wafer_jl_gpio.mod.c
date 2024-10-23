@@ -30,8 +30,9 @@ MODULE_INFO(retpoline, "Y");
 static const struct modversion_info ____versions[]
 __used __section("__versions") = {
 	{ 0xbdfb6dbb, "__fentry__" },
-	{ 0xe3ec2f2b, "alloc_chrdev_region" },
+	{ 0xc9d4d6d1, "wmi_has_guid" },
 	{ 0x92997ed8, "_printk" },
+	{ 0xe3ec2f2b, "alloc_chrdev_region" },
 	{ 0xfe4f99b8, "cdev_init" },
 	{ 0xece45940, "cdev_add" },
 	{ 0x6091b333, "unregister_chrdev_region" },
@@ -45,10 +46,10 @@ __used __section("__versions") = {
 	{ 0x13c49cc2, "_copy_from_user" },
 	{ 0x3b6c41ea, "kstrtouint" },
 	{ 0xd92deb6b, "acpi_evaluate_object" },
-	{ 0xd0da656b, "__stack_chk_fail" },
 	{ 0x37a0cba, "kfree" },
+	{ 0xd0da656b, "__stack_chk_fail" },
 	{ 0xc2855f40, "module_layout" },
 };
 
-MODULE_INFO(depends, "");
+MODULE_INFO(depends, "wmi");
 
