@@ -8,7 +8,7 @@
 #include <linux/cdev.h>
 #include <linux/wmi.h>  // For working with WMI
 
-#define ACPI_METHOD_NAME "\\_SB.ISM.SDIO"  // ACPI method name
+#define ACPI_METHOD_NAME "\\ISM.SDIO"  // ACPI method name user \\_SB.ISM.SDIO for BIOS 1.3
 #define DEVICE_NAME "gpio_wafer"  // Device name
 #define CLASS_NAME "gpio_class"   // Class name for the device
 #define WMI_DEVICE_GUID "ABBC0F6A-8EA1-11D1-00A0-C90629100000"  // WMI device GUID

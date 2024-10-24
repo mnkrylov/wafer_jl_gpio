@@ -1,0 +1,8 @@
+kernel_module_gpio_wmi
+*.o
+*.cmd
+*.symvers
+*.order
+*.mod
+*.ko
+*.mod.c
