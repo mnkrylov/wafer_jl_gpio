@@ -11,12 +11,22 @@ The implementation of GPIO control is still in progress. The project contains co
 - **acpi_methods.txt**: Contains the ACPI methods relevant to the Wafer-JL board, including GPIO methods such as `STEC` (Set DIO State) and `SDIO` (Set DIO).
 - **guesses.txt**: Contains guessed WMI device GUIDs and associated methods for GPIO control.
 - **iasl_data.txt**: Data dump from `iasl`, useful for debugging and understanding ACPI tables.
+- **examples/acpi/\<method name\>**: Examples of ACPI method calls.
+- **examples/wmi/\<method name\>**: Examples of WMI method calls.
 
 ## Available now
 
+### Examples of ACPI calls:
+
 - **STEC**: Manually set the DIO state (called from SDIO) with additional parameters.
 - **SDIO**: Interface for setting DIO values.
+- **WMAA**: Root method for selecting an action based on argument 2. Implemented WMAA->IM06->SDIO call for toggling the LED.
 
+### Examples of WMI calls:
+
+- **WMAA**: IM06 - Method for DIO control (equivalent to SetDIOWMI). Toggles the LED and prints the returned status in `dmesg`.
+
+> **Note:** All test outputs print additional debug information in `dmesg`.
 
 ## ACPI Methods
 
@@ -27,18 +37,16 @@ The full name of an ACPI method may depend on the version of the BIOS. For examp
 // or
 #define ACPI_METHOD_NAME "\\ISM.SDIO"     // for BIOS version 1.4
 ```
+
 ### Important:
 
 It is crucial to specify the correct `ACPI_METHOD_NAME` in the `.c` file of the kernel module to ensure proper GPIO control. Incorrect method names can result in failure to communicate with the GPIO hardware. Make sure to update the method name in your source code based on the BIOS version detected, like so:
-
 
 To check the current ACPI method name (for example, for the `SDIO` method), you can use the `acpiexec` tool from the `acpica-tools` package. Run the following command to search for the `SDIO` method in the DSDT table:
 
 ```
 acpiexec -b Method -l /sys/firmware/acpi/tables/DSDT | grep SDIO
 ```
-
-
 
 ## SDIO values
 

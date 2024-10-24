@@ -7,6 +7,26 @@
 
 #define ACPI_METHOD_NAME "\\ISM.WMAA"  // ACPI method name
 
+static void print_args_bytes(union acpi_object *args, int count) {
+    int i, j;
+    unsigned char *data;
+
+    for (i = 0; i < count; i++) {
+        if (args[i].type == ACPI_TYPE_INTEGER) {
+            pr_info("Arg[%d] (INTEGER): 0x%llx", i, args[i].integer.value);
+            pr_cont(" (%zu)\n", sizeof(args[i].integer.value));
+        } else if (args[i].type == ACPI_TYPE_BUFFER) {
+            pr_info("Arg[%d] (BUFFER): ", i);
+            data = (unsigned char *)args[i].buffer.pointer;
+            for (j = 0; j < args[i].buffer.length; j++) {
+                pr_cont("%02x ", data[j]);
+               
+            }
+            pr_cont(" (%zu) [%zu]\n", sizeof(data[0]), sizeof(data));
+        }
+        
+    }
+}
 // Function to set up and invoke the ACPI method
 static acpi_status call_acpi_wmaa_method(unsigned int arg1, unsigned int arg2, unsigned int arg3)
 {
@@ -14,7 +34,7 @@ static acpi_status call_acpi_wmaa_method(unsigned int arg1, unsigned int arg2, u
     struct acpi_object_list arg_list;
     union acpi_object args[3];  // Arguments for the STEC method
     struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };  // Buffer for the result
-
+    
     // Setting up arguments for the method call
     args[0].type = ACPI_TYPE_INTEGER;
     args[0].integer.value = arg1;
@@ -26,11 +46,10 @@ static acpi_status call_acpi_wmaa_method(unsigned int arg1, unsigned int arg2, u
     args[2].type = ACPI_TYPE_BUFFER;
     args[2].buffer.length = 4;
     args[2].buffer.pointer = (char*)&arg3;
-
+    print_args_bytes(args, 3);
 
     arg_list.count =3;
     arg_list.pointer = args;
-
     // Calling the ACPI method
     status = acpi_evaluate_object(NULL, ACPI_METHOD_NAME, &arg_list, &result);
     if (ACPI_FAILURE(status)) {
@@ -64,7 +83,7 @@ static int __init acpi_method_caller_init(void)
                                 };
     arg_size= sizeof(arg_values);
     // Loop to call the method 5 times
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 1; i++) {
         for (j = 0; j < 6; j++) {
             status = call_acpi_wmaa_method(0, 0x06, arg_values[j]);
             if (ACPI_FAILURE(status)) {
