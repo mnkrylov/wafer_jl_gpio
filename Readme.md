@@ -1,5 +1,6 @@
 # Wafer-JL GPIO on Linux
-> **Device GUID** ABBC0F6A-8EA1-11D1-00A0-C90629100000 
+**Device GUID** ABBC0F6A-8EA1-11D1-00A0-C90629100000.
+
 This project is focused on implementing GPIO control for the Wafer-JL board. It includes data for analysis and code examples to support the development of GPIO management through various methods, such as low-level interactions via ACPI methods.
 
 ## Current Status
