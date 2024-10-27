@@ -10,23 +10,31 @@
 #define WMI_ID_IM06 0x06  // Replace with the correct method ID
 
 // Function to print the contents of the buffer in bytes
-static void print_output_buffer(struct acpi_buffer *buffer)
-{
-    if (buffer && buffer->pointer) {
-        unsigned char *data = buffer->pointer;
-        size_t i;
-
-        // Print all bytes in hex format
-        pr_info("Output buffer (hex): ");
-        for (i = 0; i < buffer->length; i++) {
-            pr_cont("%02x", data[i]);  // Print each byte in hex without a newline
+static void print_output_buffer(struct acpi_buffer *result) {
+    if (result && result->pointer) {
+        union acpi_object *obj = result->pointer;
+        switch (obj->type) {
+            case ACPI_TYPE_INTEGER:
+                pr_info("Result (INTEGER): 0x%llx\n", obj->integer.value);
+                break;
+            case ACPI_TYPE_STRING:
+                pr_info("Result (STRING): %s\n", obj->string.pointer);
+                break;
+            case ACPI_TYPE_BUFFER:
+                pr_info("Result (BUFFER): ");
+                for (size_t i = 0; i < obj->buffer.length; i++) {
+                    pr_cont("%02x ", obj->buffer.pointer[i]);
+                }
+                pr_cont("\n");
+                break;
+            default:
+                pr_info("Result type is unsupported or unknown\n");
+                break;
         }
-        pr_cont("\n");  // End the line after printing all bytes
     } else {
-        pr_info("Output buffer is empty or NULL.\n");
+        pr_info("Result buffer is empty or NULL.\n");
     }
 }
-
 // Function to call the WMI method
 static acpi_status call_wmi_im06_method(u32 arg1)
 {
@@ -63,24 +71,29 @@ static int __init wmi_method_caller_init(void)
     acpi_status status;
 
     // Array of values to call the method
-    unsigned int arg_values[] = {  0x1000000
-                                ,  0x1000001
-                                ,  0x1000002 
+    unsigned int arg_values[] = {  0x1000001
+                                ,  0x1000002
                                 ,  0x1000004 
                                 ,  0x1000008 
-                                ,  0x100003F  
+                                ,  0x1000010 
+                                ,  0x1000020  
+                                ,  0x100003F 
+                                ,  0x1000000 
+                                ,  0x100003F
+                                ,  0x1000000
+                                ,  0x100003F
                                 };
 
     // Loop to call the method 3 times
-    for (i = 0; i < 1; i++) {
-        for (j = 0; j < 6; j++) {
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 9; j++) {
             status = call_wmi_im06_method(arg_values[j]);
             if (ACPI_FAILURE(status)) {
                 pr_err("Failed WMI call on cycle %d\n", i);
             }
 
             // Pause for 1 second
-            msleep(1000);
+            msleep(300);
         }
     }
 

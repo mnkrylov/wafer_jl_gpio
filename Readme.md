@@ -59,7 +59,6 @@ acpiexec -b Method -l /sys/firmware/acpi/tables/DSDT | grep SDIO
 | DIO3       | 3            | 0x00000008 | 0x1000008           |
 | DIO4       | 4            | 0x00000010 | 0x1000010           |
 | DIO5       | 5            | 0x00000020 | 0x1000020           |
-
 ## Kernel Module: `wafer_jl_gpio`
 
 The `wafer_jl_gpio` kernel module, located in the `kernel_module_gpio` directory, allows users to control GPIO through `/dev/gpio_wafer`. This provides a simple interface for managing GPIO pins. For example:
@@ -81,6 +80,29 @@ Or to turn on DIO1:
 ```
 echo 0x1000002 > /dev/gpio_wafer
 ```
+
+## Kernel Module: `wafer_jl_gpio_wmi`
+
+The `wafer_jl_gpio_wmi` kernel module offers similar functionality to `wafer_jl_gpio.ko` but with some key distinctions. Installation and operation are identical; simply load the module using `insmod`, and interact with it via `/dev/gpio_wafer`.
+
+### Key Features
+
+1. **Potential Independence from BIOS Version:** Unlike ACPI-based methods, which can vary across BIOS versions, `wafer_jl_gpio_wmi` relies on WMI method numbers, making it potentially less dependent on the specific BIOS version.
+  
+2. **Additional Functionality:**
+   - Besides commands like:
+  
+     ```
+     echo 0x1000002 > /dev/gpio_wafer
+     ```
+  
+   - `wafer_jl_gpio_wmi` also reads the current DIO buffer state, including INPUT pins. For example, you can check the current state of all DIO pins by running:
+  
+     ```
+     cat /dev/gpio_wafer
+     ```
+
+This allows users not only to set GPIO states but also to monitor the input state of the DIO pins, enhancing GPIO management capabilities on the Wafer-JL board.
 
 ## How to Build
 
