@@ -46,9 +46,7 @@ static acpi_status call_wmi_im06_method(u32 arg1)
     status = wmi_evaluate_method(WMI_DEVICE_GUID, 0, WMI_ID_IM06, &input_buffer, &output_buffer);
     if (ACPI_FAILURE(status)) {
         pr_err("Failed to call WMI method with arg 0x%x\n", arg1);
-    } else {
-        pr_info("Successfully called WMI method with arg 0x%x\n", arg1);
-    }
+    } 
     
     return status;
 }

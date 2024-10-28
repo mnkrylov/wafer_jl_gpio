@@ -1,1 +1,0 @@
-cmd_/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/modules.order := {   echo /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.ko; :; } > /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/modules.order

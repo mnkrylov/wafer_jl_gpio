@@ -1,1 +1,0 @@
-cmd_/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/Module.symvers :=  sed 's/ko$$/o/'  /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/modules.order | scripts/mod/modpost -m      -o /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/Module.symvers -e -i Module.symvers -T - 

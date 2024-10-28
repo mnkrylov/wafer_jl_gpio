@@ -1,1 +1,1 @@
-insmod wafer_jl_gpio_wmi.ko
+insmod build/wafer_jl_gpio_wmi.ko

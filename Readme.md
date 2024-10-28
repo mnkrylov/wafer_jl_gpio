@@ -81,7 +81,7 @@ Or to turn on DIO1:
 echo 0x1000002 > /dev/gpio_wafer
 ```
 
-## Kernel Module: `wafer_jl_gpio_wmi`
+## Kernel Module: `wafer_jl_gpio_wmi` RECOMMENDED
 
 The `wafer_jl_gpio_wmi` kernel module offers similar functionality to `wafer_jl_gpio.ko` but with some key distinctions. Installation and operation are identical; simply load the module using `insmod`, and interact with it via `/dev/gpio_wafer`.
 

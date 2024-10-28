@@ -1,1 +1,0 @@
-cmd_/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.mod := printf '%s\n'   wafer_jl_gpio.o | awk '!x[$$0]++ { print("/home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/"$$0) }' > /home/user/driver_tests/wafer_jl_gpio/kernel_module_gpio/wafer_jl_gpio.mod
